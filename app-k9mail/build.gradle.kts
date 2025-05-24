@@ -85,8 +85,6 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByType(SigningType.K9_RELEASE)
-
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
