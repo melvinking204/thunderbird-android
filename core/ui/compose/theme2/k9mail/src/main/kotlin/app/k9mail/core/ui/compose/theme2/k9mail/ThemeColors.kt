@@ -4,14 +4,14 @@ import androidx.compose.ui.graphics.Color
 import app.k9mail.core.ui.compose.theme2.ThemeColorScheme
 
 internal val lightThemeColorScheme = ThemeColorScheme(
-    primary = Color(color = 0xFF5F303D),
+    primary = Color(color = 0xFF407887),
     onPrimary = Color(color = 0xFFFFFFFF),
-    primaryContainer = Color(color = 0xFF875360),
+    primaryContainer = Color(color = 0xFF306E6E),
     onPrimaryContainer = Color(color = 0xFFFFFFFF),
 
-    secondary = Color(color = 0xFF422129),
+    secondary = Color(color = 0xFF244747),
     onSecondary = Color(color = 0xFFFFFFFF),
-    secondaryContainer = Color(color = 0xFF68414B),
+    secondaryContainer = Color(color = 0xFF2C5E5E),
     onSecondaryContainer = Color(color = 0xFFFFE2E7),
 
     tertiary = Color(color = 0xFF443968),
