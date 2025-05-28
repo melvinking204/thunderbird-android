@@ -14,9 +14,9 @@ internal val lightThemeColorScheme = ThemeColorScheme(
     secondaryContainer = Color(color = 0xFF2C5E5E),
     onSecondaryContainer = Color(color = 0xFFFFE2E7),
 
-    tertiary = Color(color = 0xFF443968),
+    tertiary = Color(color = 0xFF244D4D),
     onTertiary = Color(color = 0xFFFFFFFF),
-    tertiaryContainer = Color(color = 0xFF685C8E),
+    tertiaryContainer = Color(color = 0xFF265252),
     onTertiaryContainer = Color(color = 0xFFFFFFFF),
 
     error = Color(color = 0xFFA0000E),

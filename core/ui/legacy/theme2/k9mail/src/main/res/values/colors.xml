@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Light Theme -->
-    <color name="lightPrimary">#5F303D</color>
+    <color name="lightPrimary">#407887</color>
     <color name="lightOnPrimary">#FFFFFF</color>
-    <color name="lightPrimaryContainer">#875360</color>
+    <color name="lightPrimaryContainer">#306E6E</color>
     <color name="lightOnPrimaryContainer">#FFFFFF</color>
 
-    <color name="lightSecondary">#422129</color>
+    <color name="lightSecondary">#244747</color>
     <color name="lightOnSecondary">#FFFFFF</color>
-    <color name="lightSecondaryContainer">#68414B</color>
+    <color name="lightSecondaryContainer">#2C5E5E</color>
     <color name="lightOnSecondaryContainer">#FFE2E7</color>
 
-    <color name="lightTertiary">#443968</color>
+    <color name="lightTertiary">#244D4D</color>
     <color name="lightOnTertiary">#FFFFFF</color>
-    <color name="lightTertiaryContainer">#685C8E</color>
+    <color name="lightTertiaryContainer">#265252</color>
     <color name="lightOnTertiaryContainer">#FFFFFF</color>
 
     <color name="lightError">#A0000E</color>
