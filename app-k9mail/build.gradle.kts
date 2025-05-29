@@ -76,7 +76,7 @@ android {
             ),
         )
 
-        buildConfigField("String", "CLIENT_INFO_APP_NAME", "\"Mail\"")
+        buildConfigField("String", "CLIENT_INFO_APP_NAME", "\"Email\"")
     }
 
     signingConfigs {
