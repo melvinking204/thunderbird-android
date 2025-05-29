@@ -7,7 +7,7 @@
 
     <application
         android:name="app.k9mail.K9App"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.K9.Startup"
         tools:replace="android:theme"
