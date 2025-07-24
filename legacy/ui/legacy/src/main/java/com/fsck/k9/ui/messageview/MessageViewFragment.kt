@@ -10,6 +10,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.SystemClock
+import android.print.PrintAttributes
+import android.print.PrintManager
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.Menu
@@ -17,6 +19,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityCompat
@@ -45,9 +48,14 @@ import com.fsck.k9.helper.HttpsUnsubscribeUri
 import com.fsck.k9.helper.MailtoUnsubscribeUri
 import com.fsck.k9.helper.UnsubscribeUri
 import com.fsck.k9.mail.Flag
+import com.fsck.k9.mail.Part
+import com.fsck.k9.mail.internet.MessageExtractor
+import com.fsck.k9.mail.internet.Viewable
 import com.fsck.k9.mailstore.AttachmentViewInfo
 import com.fsck.k9.mailstore.LocalMessage
 import com.fsck.k9.mailstore.MessageViewInfo
+import com.fsck.k9.message.html.HtmlSettings
+import com.fsck.k9.ui.BuildConfig
 import com.fsck.k9.ui.R
 import com.fsck.k9.ui.base.extensions.withArguments
 import com.fsck.k9.ui.choosefolder.ChooseFolderActivity
@@ -57,6 +65,7 @@ import com.fsck.k9.ui.messagesource.MessageSourceActivity
 import com.fsck.k9.ui.messageview.MessageCryptoPresenter.MessageCryptoMvpView
 import com.fsck.k9.ui.settings.account.AccountSettingsActivity
 import com.fsck.k9.ui.share.ShareIntentBuilder
+import com.fsck.k9.view.MessageWebView
 import java.util.Locale
 import org.koin.android.ext.android.inject
 import org.openintents.openpgp.util.OpenPgpIntentStarter
@@ -68,6 +77,7 @@ class MessageViewFragment :
     ConfirmationDialogFragmentListener,
     AttachmentViewCallback {
 
+    private lateinit var messageViewInfo: MessageViewInfo
     private val themeManager: ThemeManager by inject()
     private val messageLoaderHelperFactory: MessageLoaderHelperFactory by inject()
     private val accountManager: AccountManager by inject()
@@ -112,7 +122,6 @@ class MessageViewFragment :
     private var wasMessageMarkedAsOpened: Boolean = false
 
     private var isActive: Boolean = false
-        private set
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -355,7 +364,7 @@ class MessageViewFragment :
 
     private fun showMessage(messageViewInfo: MessageViewInfo) {
         hideKeyboard()
-
+        this.messageViewInfo = messageViewInfo
         val handledByCryptoPresenter = messageCryptoPresenter.maybeHandleShowMessage(
             messageTopView,
             account,
@@ -417,8 +426,70 @@ class MessageViewFragment :
                 R.id.forward_as_attachment -> onForwardAsAttachment()
                 R.id.edit_as_new_message -> onEditAsNewMessage()
                 R.id.share -> onSendAlternate()
+                R.id.print -> onPrint()
                 else -> error("Missing handler for reply menu item $itemId")
             }
+        }
+
+    }
+
+    private fun onPrint() {
+
+        val context = requireContext().applicationContext
+
+        val outputNonViewableParts = ArrayList<Part>();
+        val outputViewableParts = ArrayList<Viewable>();
+        MessageExtractor.findViewablesAndAttachments(message, outputViewableParts, outputNonViewableParts);
+        val container = messageLoaderHelperFactory.messageViewInfoExtractorFactory.create(HtmlSettings(
+            useDarkMode = false,
+            useFixedWidthFont = false
+        )).extractTextFromViewables(outputViewableParts);
+
+        messageLoaderHelperFactory.createForPrint(
+            context = context,
+            loaderManager = loaderManager,
+            fragmentManager = parentFragmentManager,
+            callback = object : MessageLoaderCallbacks {
+                override fun onMessageViewInfoLoadFinished(messageViewInfo: MessageViewInfo?) {
+                    val webView = MessageWebView(context)
+                    webView.displayHtmlContentWithInlineAttachments(
+                        container.html,
+                        attachmentResolver = messageViewInfo!!.attachmentResolver,
+                        onPageFinishedListener = {
+                            createWebPrintJob(webView)
+//                            if (themeToggled) themeManager.toggleMessageViewTheme()
+                        },
+                    )
+                }
+
+                override fun onMessageDataLoadFinished(message: LocalMessage?) = Unit; override fun onMessageDataLoadFailed() = Unit
+                override fun onMessageViewInfoLoadFailed(messageViewInfo: MessageViewInfo?) = Unit
+                override fun setLoadingProgress(current: Int, max: Int) = Unit
+                override fun startIntentSenderForMessageLoaderHelper(intentSender: IntentSender?, requestCode: Int): Boolean = false
+                override fun onDownloadErrorMessageNotFound() = Unit
+                override fun onDownloadErrorNetworkError() = Unit
+            },
+        )
+        .asyncStartOrResumeLoadingMessage(messageReference, null)
+
+    }
+
+    private fun createWebPrintJob(webView: WebView) {
+
+        // Get a PrintManager instance
+        (activity?.getSystemService(Context.PRINT_SERVICE) as? PrintManager)?.let { printManager ->
+
+            val jobName = "${BuildConfig.LIBRARY_PACKAGE_NAME} Document"
+
+            // Get a print adapter instance
+            val printAdapter = webView.createPrintDocumentAdapter(jobName)
+
+            // Create a print job with name and adapter instance
+            printManager.print(
+                jobName,
+                printAdapter,
+                PrintAttributes.Builder().build(),
+            )
         }
     }
 

@@ -178,7 +178,7 @@ public class MessageViewInfoExtractor {
      *          In case of an error.
      */
     @VisibleForTesting
-    ViewableExtractedText extractTextFromViewables(List<Viewable> viewables)
+    public ViewableExtractedText extractTextFromViewables(List<Viewable> viewables)
             throws MessagingException {
         try {
             // Collect all viewable parts
@@ -550,7 +550,7 @@ public class MessageViewInfoExtractor {
     }
 
     @VisibleForTesting
-    static class ViewableExtractedText {
+    public static class ViewableExtractedText {
         public final String text;
         public final String html;
 

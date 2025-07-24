@@ -54,6 +54,7 @@
     <string name="spam_action">Spam</string>
     <string name="forward_action">Forward</string>
     <string name="forward_as_attachment_action">Forward as attachment</string>
+    <string name="print_action">Print</string>
     <string name="edit_as_new_message_action">Edit as new message</string>
     <string name="move_action">Move</string>
     <string name="move_to_drafts_action">Move to Drafts</string>

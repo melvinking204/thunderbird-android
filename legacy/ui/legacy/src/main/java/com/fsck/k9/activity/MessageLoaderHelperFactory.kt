@@ -8,7 +8,7 @@ import com.fsck.k9.mailstore.MessageViewInfoExtractorFactory
 import com.fsck.k9.ui.helper.HtmlSettingsProvider
 
 class MessageLoaderHelperFactory(
-    private val messageViewInfoExtractorFactory: MessageViewInfoExtractorFactory,
+    val messageViewInfoExtractorFactory: MessageViewInfoExtractorFactory,
     private val htmlSettingsProvider: HtmlSettingsProvider,
 ) {
     fun createForMessageView(
@@ -18,6 +18,17 @@ class MessageLoaderHelperFactory(
         callback: MessageLoaderCallbacks,
     ): MessageLoaderHelper {
         val htmlSettings = htmlSettingsProvider.createForMessageView()
+        val messageViewInfoExtractor = messageViewInfoExtractorFactory.create(htmlSettings)
+        return MessageLoaderHelper(context, loaderManager, fragmentManager, callback, messageViewInfoExtractor)
+    }
+
+    fun createForPrint(
+        context: Context,
+        loaderManager: LoaderManager,
+        fragmentManager: FragmentManager,
+        callback: MessageLoaderCallbacks,
+    ): MessageLoaderHelper {
+        val htmlSettings = HtmlSettingsProvider().createForMessageView(useDarkTheme = false)
         val messageViewInfoExtractor = messageViewInfoExtractorFactory.create(htmlSettings)
         return MessageLoaderHelper(context, loaderManager, fragmentManager, callback, messageViewInfoExtractor)
     }
