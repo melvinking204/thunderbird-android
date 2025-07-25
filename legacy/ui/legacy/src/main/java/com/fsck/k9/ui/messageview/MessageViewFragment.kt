@@ -446,7 +446,7 @@ class MessageViewFragment :
             useDarkMode = false,
             useFixedWidthFont = false
         )).extractTextFromViewables(outputViewableParts);
-
+        messageLoaderHelper.downloadCompleteMessage()
         messageLoaderHelperFactory.createForPrint(
             context = context,
             loaderManager = loaderManager,
@@ -501,7 +501,7 @@ class MessageViewFragment :
                 scaleMode = PrintHelper.SCALE_MODE_FIT
             }.also { printHelper ->
                 attachments.forEach {
-                    if (it.isSupportedImage)
+                    if (it.isSupportedImage && it.isContentAvailable)
                         printHelper.printBitmap(it.displayName, it.internalUri)
                 }
             }
