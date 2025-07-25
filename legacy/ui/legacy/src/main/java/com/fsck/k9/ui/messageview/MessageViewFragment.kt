@@ -446,22 +446,23 @@ class MessageViewFragment :
             useDarkMode = false,
             useFixedWidthFont = false
         )).extractTextFromViewables(outputViewableParts);
-        messageLoaderHelper.downloadCompleteMessage()
-        messageLoaderHelperFactory.createForPrint(
+        val messageLoaderHelper = messageLoaderHelperFactory.createForPrint(
             context = context,
             loaderManager = loaderManager,
             fragmentManager = parentFragmentManager,
             callback = object : MessageLoaderCallbacks {
                 override fun onMessageViewInfoLoadFinished(messageViewInfo: MessageViewInfo?) {
-                    val webView = MessageWebView(context)
-                    webView.displayHtmlContentWithInlineAttachments(
-                        container.html,
-                        attachmentResolver = messageViewInfo!!.attachmentResolver,
-                        onPageFinishedListener = {
-                            createWebPrintJob(webView)
-                            printAttachments(messageViewInfo.attachments)
-                        },
-                    )
+                    if (!messageViewInfo!!.isMessageIncomplete) {
+                        val webView = MessageWebView(context)
+                        webView.displayHtmlContentWithInlineAttachments(
+                            container.html,
+                            attachmentResolver = messageViewInfo.attachmentResolver,
+                            onPageFinishedListener = {
+                                createWebPrintJob(webView)
+                                printAttachments(messageViewInfo.attachments)
+                            },
+                        )
+                    }
                 }
 
                 override fun onMessageDataLoadFinished(message: LocalMessage?) = Unit; override fun onMessageDataLoadFailed() = Unit
@@ -472,8 +473,8 @@ class MessageViewFragment :
                 override fun onDownloadErrorNetworkError() = Unit
             },
         )
-        .asyncStartOrResumeLoadingMessage(messageReference, null)
-
+        messageLoaderHelper.asyncStartOrResumeLoadingMessage(messageReference, null)
+        messageLoaderHelper.downloadCompleteMessage()
     }
 
     private fun createWebPrintJob(webView: WebView) {
