@@ -501,7 +501,8 @@ class MessageViewFragment :
                 scaleMode = PrintHelper.SCALE_MODE_FIT
             }.also { printHelper ->
                 attachments.forEach {
-                    printHelper.printBitmap(it.displayName, it.internalUri)
+                    if (it.isSupportedImage)
+                        printHelper.printBitmap(it.displayName, it.internalUri)
                 }
             }
         }
