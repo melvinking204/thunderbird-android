@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.IntentSender.SendIntentException
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -27,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.print.PrintHelper
 import app.k9mail.core.android.common.activity.CreateDocumentResultContract
 import app.k9mail.core.ui.legacy.designsystem.atom.icon.Icons
 import app.k9mail.core.ui.theme.api.Theme
@@ -457,7 +459,7 @@ class MessageViewFragment :
                         attachmentResolver = messageViewInfo!!.attachmentResolver,
                         onPageFinishedListener = {
                             createWebPrintJob(webView)
-//                            if (themeToggled) themeManager.toggleMessageViewTheme()
+                            printAttachments(messageViewInfo.attachments)
                         },
                     )
                 }
@@ -490,6 +492,18 @@ class MessageViewFragment :
                 printAdapter,
                 PrintAttributes.Builder().build(),
             )
+        }
+    }
+
+    private fun printAttachments(attachments: List<AttachmentViewInfo>) {
+        activity?.also { context ->
+            PrintHelper(context).apply {
+                scaleMode = PrintHelper.SCALE_MODE_FIT
+            }.also { printHelper ->
+                attachments.forEach {
+                    printHelper.printBitmap(it.displayName, it.internalUri)
+                }
+            }
         }
     }
 
