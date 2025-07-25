@@ -474,7 +474,7 @@ class MessageViewFragment :
             },
         )
         messageLoaderHelper.asyncStartOrResumeLoadingMessage(messageReference, null)
-        messageLoaderHelper.downloadCompleteMessage()
+        if (messageViewInfo.isMessageIncomplete) messageLoaderHelper.downloadCompleteMessage()
     }
 
     private fun createWebPrintJob(webView: WebView) {
