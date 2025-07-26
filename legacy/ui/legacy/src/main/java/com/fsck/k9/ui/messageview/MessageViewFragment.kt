@@ -467,10 +467,8 @@ class MessageViewFragment :
                             onPageFinishedListener = {
                                 createWebPrintJob(webView)?.also { printJob ->
                                     viewLifecycleOwner.lifecycleScope.launch {
-                                        while (!printJob.isCompleted) {
-                                            delay(1000)
-                                        }
-                                        printAttachments(messageViewInfo.attachments)
+                                        if (printJob.isQueued) printAttachments(messageViewInfo.attachments)
+                                        else delay(1000)
                                     }
                                 }
                             },
