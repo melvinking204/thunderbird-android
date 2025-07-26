@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.os.SystemClock
 import android.print.PrintAttributes
+import android.print.PrintJob
 import android.print.PrintManager
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -28,6 +29,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.print.PrintHelper
 import app.k9mail.core.android.common.activity.CreateDocumentResultContract
 import app.k9mail.core.ui.legacy.designsystem.atom.icon.Icons
@@ -69,6 +72,10 @@ import com.fsck.k9.ui.settings.account.AccountSettingsActivity
 import com.fsck.k9.ui.share.ShareIntentBuilder
 import com.fsck.k9.view.MessageWebView
 import java.util.Locale
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.openintents.openpgp.util.OpenPgpIntentStarter
 import timber.log.Timber
@@ -437,7 +444,7 @@ class MessageViewFragment :
 
     private fun onPrint() {
 
-        val context = requireContext().applicationContext
+        val context = requireActivity()
 
         val outputNonViewableParts = ArrayList<Part>();
         val outputViewableParts = ArrayList<Viewable>();
@@ -458,8 +465,14 @@ class MessageViewFragment :
                             container.html,
                             attachmentResolver = messageViewInfo.attachmentResolver,
                             onPageFinishedListener = {
-                                createWebPrintJob(webView)
-                                printAttachments(messageViewInfo.attachments)
+                                createWebPrintJob(webView)?.also { printJob ->
+                                    viewLifecycleOwner.lifecycleScope.launch {
+                                        while (!printJob.isCompleted) {
+                                            delay(1000)
+                                        }
+                                        printAttachments(messageViewInfo.attachments)
+                                    }
+                                }
                             },
                         )
                     }
@@ -477,10 +490,9 @@ class MessageViewFragment :
         if (messageViewInfo.isMessageIncomplete) messageLoaderHelper.downloadCompleteMessage()
     }
 
-    private fun createWebPrintJob(webView: WebView) {
-
+    private fun createWebPrintJob(webView: WebView): PrintJob? =
         // Get a PrintManager instance
-        (activity?.getSystemService(Context.PRINT_SERVICE) as? PrintManager)?.let { printManager ->
+         (activity?.getSystemService(Context.PRINT_SERVICE) as? PrintManager)?.let { printManager ->
 
             val jobName = "${BuildConfig.LIBRARY_PACKAGE_NAME} Document"
 
@@ -494,7 +506,7 @@ class MessageViewFragment :
                 PrintAttributes.Builder().build(),
             )
         }
-    }
+
 
     private fun printAttachments(attachments: List<AttachmentViewInfo>) {
         activity?.also { context ->
