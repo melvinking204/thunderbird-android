@@ -563,7 +563,7 @@ jobs:
           ls -l ${UPLOAD_PATH}/
 
       - name: Upload unsigned
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         env:
           UPLOAD_PATH: "uploads"
         with:
@@ -612,7 +612,7 @@ jobs:
           rm -f uploads/*.jks
 
       - name: Upload signed
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: signed-${{ matrix.appName }}-${{ matrix.packageFormat }}-${{ matrix.packageFlavor }}
           if-no-files-found: error
