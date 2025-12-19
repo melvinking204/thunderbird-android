@@ -11,6 +11,7 @@ dependencies {
     implementation(projects.core.ui.compose.designsystem)
     implementation(projects.core.common)
 
+    implementation(libs.androidx.compose.material3)
     implementation(projects.mail.common)
     implementation(projects.mail.protocols.imap)
     implementation(projects.mail.protocols.pop3)

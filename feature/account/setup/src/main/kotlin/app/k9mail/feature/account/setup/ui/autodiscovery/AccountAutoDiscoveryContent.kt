@@ -5,16 +5,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import app.k9mail.core.ui.compose.designsystem.molecule.ContentLoadingErrorView
 import app.k9mail.core.ui.compose.designsystem.molecule.ErrorView
 import app.k9mail.core.ui.compose.designsystem.molecule.LoadingView
@@ -61,7 +67,21 @@ internal fun AccountAutoDiscoveryContent(
                 AppTitleTopHeader(
                     title = brandName,
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    ) {
+                    if (state.configStep == AccountAutoDiscoveryContract.ConfigStep.EMAIL_ADDRESS) {
+                        Text(
+                            text = stringResource(id = R.string.account_setup_auto_discovery_prompt),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MainTheme.spacings.quadruple),
+                        )
+                    }
+                }
                 AutoDiscoveryContent(
                     state = state,
                     onEvent = onEvent,
@@ -74,6 +94,7 @@ internal fun AccountAutoDiscoveryContent(
                 onNextClick = { onEvent(Event.OnNextClicked) },
                 onBackClick = { onEvent(Event.OnBackClicked) },
                 state = WizardNavigationBarState(showNext = state.isNextButtonVisible),
+
             )
         }
     }
