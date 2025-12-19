@@ -470,16 +470,7 @@ class MessageViewFragment :
                             styledHtml,
                             attachmentResolver = messageViewInfo.attachmentResolver,
                             onPageFinishedListener = {
-                                createWebPrintJob(webView)?.also { printJob ->
-                                    viewLifecycleOwner.lifecycleScope.launch {
-                                        while (isActive) {
-                                            if (printJob.isCompleted || printJob.isCancelled) {
-                                                printAttachments(messageViewInfo.attachments)
-                                                break
-                                            } else delay(1000)
-                                        }
-                                    }
-                                }
+                                createWebPrintJob(webView)
                             },
                         )
                     }
