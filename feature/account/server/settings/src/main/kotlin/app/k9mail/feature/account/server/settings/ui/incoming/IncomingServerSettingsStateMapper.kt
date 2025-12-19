@@ -1,5 +1,6 @@
 package app.k9mail.feature.account.server.settings.ui.incoming
 
+import app.k9mail.core.common.net.toDomain
 import app.k9mail.feature.account.common.domain.entity.AccountState
 import app.k9mail.feature.account.common.domain.entity.IncomingProtocolType
 import app.k9mail.feature.account.common.domain.entity.toAuthType
@@ -8,7 +9,6 @@ import app.k9mail.feature.account.common.domain.entity.toConnectionSecurity
 import app.k9mail.feature.account.common.domain.entity.toMailConnectionSecurity
 import app.k9mail.feature.account.common.domain.input.NumberInputField
 import app.k9mail.feature.account.common.domain.input.StringInputField
-import app.k9mail.feature.account.server.settings.ui.common.toInvalidEmailDomain
 import app.k9mail.feature.account.server.settings.ui.incoming.IncomingServerSettingsContract.State
 import com.fsck.k9.mail.ServerSettings
 import com.fsck.k9.mail.store.imap.ImapStoreSettings
@@ -20,7 +20,7 @@ import com.fsck.k9.mail.store.imap.ImapStoreSettings.pathPrefix
 fun AccountState.toIncomingServerSettingsState() = incomingServerSettings?.toIncomingServerSettingsState()
     ?: State(
         username = StringInputField(value = emailAddress ?: ""),
-        server = StringInputField(value = emailAddress?.toInvalidEmailDomain() ?: ""),
+        server = StringInputField(value = "imap." + (emailAddress?.substringAfter('@')?.toDomain()?.value ?: "")),
     )
 
 private fun ServerSettings.toIncomingServerSettingsState(): State {

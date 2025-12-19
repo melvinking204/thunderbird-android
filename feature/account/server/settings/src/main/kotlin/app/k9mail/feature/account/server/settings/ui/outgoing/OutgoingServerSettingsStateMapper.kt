@@ -1,5 +1,6 @@
 package app.k9mail.feature.account.server.settings.ui.outgoing
 
+import app.k9mail.core.common.net.toDomain
 import app.k9mail.feature.account.common.domain.entity.AccountState
 import app.k9mail.feature.account.common.domain.entity.toAuthType
 import app.k9mail.feature.account.common.domain.entity.toAuthenticationType
@@ -18,7 +19,7 @@ fun AccountState.toOutgoingServerSettingsState(): State {
         ?: State(
             username = StringInputField(value = emailAddress ?: ""),
             password = StringInputField(value = password),
-            server = StringInputField(value = emailAddress?.toInvalidEmailDomain() ?: ""),
+            server = StringInputField(value = "smtp." + (emailAddress?.substringAfter('@')?.toDomain()?.value ?: "")),
         )
 }
 
