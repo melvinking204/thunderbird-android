@@ -53,6 +53,7 @@ import com.fsck.k9.helper.HttpsUnsubscribeUri
 import com.fsck.k9.helper.MailtoUnsubscribeUri
 import com.fsck.k9.helper.UnsubscribeUri
 import com.fsck.k9.mail.Flag
+import com.fsck.k9.mail.Message
 import com.fsck.k9.mail.Part
 import com.fsck.k9.mail.internet.MessageExtractor
 import com.fsck.k9.mail.internet.Viewable
@@ -71,6 +72,7 @@ import com.fsck.k9.ui.messageview.MessageCryptoPresenter.MessageCryptoMvpView
 import com.fsck.k9.ui.settings.account.AccountSettingsActivity
 import com.fsck.k9.ui.share.ShareIntentBuilder
 import com.fsck.k9.view.MessageWebView
+import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -443,11 +445,42 @@ class MessageViewFragment :
     }
 
     private fun onPrint() {
+        val message = this.message ?: return
+
+        val subject = message.subject.orEmpty()
+        val from = message.from?.joinToString { address ->
+            if (address.personal.isNullOrEmpty()) {
+                address.address
+            } else {
+                "${address.personal}, &lt;${address.address}&gt;"
+            }
+        }.orEmpty()
+        val to = message.getRecipients(Message.RecipientType.TO)?.joinToString { address ->
+            if (address.personal.isNullOrEmpty()) {
+                address.address
+            } else {
+                "${address.personal}, &lt;${address.address}&gt;"
+            }
+        }.orEmpty()
+        val sentDate = message.sentDate
+        val formattedDate = sentDate?.let {
+            SimpleDateFormat("M/d/yyyy, h:mm a", Locale.getDefault()).format(it)
+        }.orEmpty()
+
+        val printHeader = """
+            <div style="text-align: center; font-weight: bold; font-size: 1.1em; margin-bottom: 1em;">$subject</div>
+            <div>
+                <b>From:</b> $from<br>
+                <b>Date:</b> $formattedDate<br>
+                <b>To:</b> $to<br>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #ccc; margin-top: 1em;" />
+        """
 
         val context = requireActivity()
 
-        val outputNonViewableParts = ArrayList<Part>();
-        val outputViewableParts = ArrayList<Viewable>();
+        val outputNonViewableParts = ArrayList<Part>()
+        val outputViewableParts = ArrayList<Viewable>()
         MessageExtractor.findViewablesAndAttachments(message, outputViewableParts, outputNonViewableParts);
         val container = messageLoaderHelperFactory.messageViewInfoExtractorFactory.create(HtmlSettings(
             useDarkMode = false,
@@ -459,7 +492,7 @@ class MessageViewFragment :
             fragmentManager = parentFragmentManager,
             callback = object : MessageLoaderCallbacks {
                 override fun onMessageViewInfoLoadFinished(messageViewInfo: MessageViewInfo?) {
-                    if (!messageViewInfo!!.isMessageIncomplete) {
+                    if (messageViewInfo?.isMessageIncomplete == false) {
                         val webView = MessageWebView(context)
                         val styledHtml = """
                             <style>
@@ -473,6 +506,7 @@ class MessageViewFragment :
                                 }
                             </style>
                             <div>
+                                $printHeader
                                 ${container.html}
                             </div>
                         """.trimIndent()
