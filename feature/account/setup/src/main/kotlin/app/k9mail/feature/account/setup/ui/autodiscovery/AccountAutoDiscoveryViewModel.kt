@@ -147,9 +147,9 @@ internal class AccountAutoDiscoveryViewModel(
             it.copy(
                 isLoading = false,
                 autoDiscoverySettings = null,
-                configStep = ConfigStep.MANUAL_SETUP,
             )
         }
+        navigateNext(isAutomaticConfig = false)
     }
 
     private fun updateAutoDiscoverySettings(settings: AutoDiscoveryResult.Settings) {
