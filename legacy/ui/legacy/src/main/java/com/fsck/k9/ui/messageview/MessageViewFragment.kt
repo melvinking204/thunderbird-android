@@ -461,8 +461,13 @@ class MessageViewFragment :
                 override fun onMessageViewInfoLoadFinished(messageViewInfo: MessageViewInfo?) {
                     if (!messageViewInfo!!.isMessageIncomplete) {
                         val webView = MessageWebView(context)
+                        val styledHtml = """
+                            <div style="padding: 18pt;">
+                                ${container.html}
+                            </div>
+                        """.trimIndent()
                         webView.displayHtmlContentWithInlineAttachments(
-                            container.html,
+                            styledHtml,
                             attachmentResolver = messageViewInfo.attachmentResolver,
                             onPageFinishedListener = {
                                 createWebPrintJob(webView)?.also { printJob ->
@@ -953,6 +958,8 @@ class MessageViewFragment :
             val maskedRequestCode = requestCode or REQUEST_MASK_CRYPTO_PRESENTER
             OpenPgpIntentStarter.startIntentSenderForResult(this@MessageViewFragment, intentSender, maskedRequestCode)
         }
+
+
 
         override fun restartMessageCryptoProcessing() {
             messageTopView.setToLoadingState()
