@@ -49,6 +49,29 @@ internal fun LazyListScope.incomingFormItems(
 
     item {
         TextInput(
+            text = state.username.value,
+            errorMessage = state.username.error?.toResourceString(resources),
+            onTextChange = { onEvent(Event.UsernameChanged(it)) },
+            label = stringResource(id = R.string.account_server_settings_username_label),
+            contentPadding = defaultItemPadding(),
+            keyboardOptions = KeyboardOptions(autoCorrect = false),
+        )
+    }
+
+    if (state.isPasswordFieldVisible) {
+        item {
+            ServerSettingsPasswordInput(
+                mode = mode,
+                password = state.password.value,
+                errorMessage = state.password.error?.toResourceString(resources),
+                onPasswordChange = { onEvent(Event.PasswordChanged(it)) },
+                contentPadding = defaultItemPadding(),
+            )
+        }
+    }
+
+    item {
+        TextInput(
             text = state.server.value,
             errorMessage = state.server.error?.toResourceString(resources),
             onTextChange = { onEvent(Event.ServerChanged(it)) },
@@ -88,29 +111,6 @@ internal fun LazyListScope.incomingFormItems(
             label = stringResource(id = R.string.account_server_settings_authentication_label),
             contentPadding = defaultItemPadding(),
         )
-    }
-
-    item {
-        TextInput(
-            text = state.username.value,
-            errorMessage = state.username.error?.toResourceString(resources),
-            onTextChange = { onEvent(Event.UsernameChanged(it)) },
-            label = stringResource(id = R.string.account_server_settings_username_label),
-            contentPadding = defaultItemPadding(),
-            keyboardOptions = KeyboardOptions(autoCorrect = false),
-        )
-    }
-
-    if (state.isPasswordFieldVisible) {
-        item {
-            ServerSettingsPasswordInput(
-                mode = mode,
-                password = state.password.value,
-                errorMessage = state.password.error?.toResourceString(resources),
-                onPasswordChange = { onEvent(Event.PasswordChanged(it)) },
-                contentPadding = defaultItemPadding(),
-            )
-        }
     }
 
     item {

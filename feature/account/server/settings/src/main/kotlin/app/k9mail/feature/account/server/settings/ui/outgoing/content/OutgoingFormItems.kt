@@ -35,6 +35,33 @@ internal fun LazyListScope.outgoingFormItems(
         Spacer(modifier = Modifier.requiredHeight(MainTheme.sizes.smaller))
     }
 
+    if (state.isUsernameFieldVisible) {
+        item {
+            TextInput(
+                text = state.username.value,
+                errorMessage = state.username.error?.toResourceString(resources),
+                onTextChange = { onEvent(Event.UsernameChanged(it)) },
+                label = stringResource(id = R.string.account_server_settings_username_label),
+                isRequired = true,
+                contentPadding = defaultItemPadding(),
+                keyboardOptions = KeyboardOptions(autoCorrect = false),
+            )
+        }
+    }
+
+    if (state.isPasswordFieldVisible) {
+        item {
+            ServerSettingsPasswordInput(
+                mode = mode,
+                password = state.password.value,
+                errorMessage = state.password.error?.toResourceString(resources),
+                onPasswordChange = { onEvent(Event.PasswordChanged(it)) },
+                isRequired = true,
+                contentPadding = defaultItemPadding(),
+            )
+        }
+    }
+
     item {
         TextInput(
             text = state.server.value,
@@ -78,33 +105,6 @@ internal fun LazyListScope.outgoingFormItems(
             label = stringResource(id = R.string.account_server_settings_authentication_label),
             contentPadding = defaultItemPadding(),
         )
-    }
-
-    if (state.isUsernameFieldVisible) {
-        item {
-            TextInput(
-                text = state.username.value,
-                errorMessage = state.username.error?.toResourceString(resources),
-                onTextChange = { onEvent(Event.UsernameChanged(it)) },
-                label = stringResource(id = R.string.account_server_settings_username_label),
-                isRequired = true,
-                contentPadding = defaultItemPadding(),
-                keyboardOptions = KeyboardOptions(autoCorrect = false),
-            )
-        }
-    }
-
-    if (state.isPasswordFieldVisible) {
-        item {
-            ServerSettingsPasswordInput(
-                mode = mode,
-                password = state.password.value,
-                errorMessage = state.password.error?.toResourceString(resources),
-                onPasswordChange = { onEvent(Event.PasswordChanged(it)) },
-                isRequired = true,
-                contentPadding = defaultItemPadding(),
-            )
-        }
     }
 
     item {
