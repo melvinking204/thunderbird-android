@@ -437,7 +437,7 @@ class MessageViewFragment :
                 R.id.forward_as_attachment -> onForwardAsAttachment()
                 R.id.edit_as_new_message -> onEditAsNewMessage()
                 R.id.share -> onSendAlternate()
-                R.id.print -> onPrint()
+                R.id.menu_print -> onPrint()
                 else -> error("Missing handler for reply menu item $itemId")
             }
         }

@@ -61,6 +61,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
     private RecipientNamesView recipientNamesView;
     private MaterialTextView dateView;
     private ImageView menuPrimaryActionView;
+    private ImageView menuPrintView;
 
     private RelativeDateTimeFormatter relativeDateTimeFormatter;
 
@@ -105,6 +106,9 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
         menuPrimaryActionView = findViewById(R.id.menu_primary_action);
         menuPrimaryActionView.setOnClickListener(this);
 
+        menuPrintView = findViewById(R.id.menu_print);
+        menuPrintView.setOnClickListener(this);
+
         View menuOverflowView = findViewById(R.id.menu_overflow);
         menuOverflowView.setOnClickListener(this);
         String menuOverflowDescription =
@@ -121,6 +125,8 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
             toggleSubjectViewMaxLines();
         } else if (id == R.id.menu_primary_action) {
             performPrimaryReplyAction();
+        } else if (id == R.id.menu_print) {
+            messageHeaderClickListener.onMenuItemClick(R.id.menu_print);
         } else if (id == R.id.menu_overflow) {
             showOverflowMenu(view);
         } else if (id == R.id.participants_container) {
@@ -323,6 +329,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
     public void hideCryptoStatus() {
         cryptoStatusIcon.setVisibility(View.GONE);
     }
+
 
     public void setCryptoStatusLoading() {
         setCryptoDisplayStatus(MessageCryptoDisplayStatus.LOADING);
