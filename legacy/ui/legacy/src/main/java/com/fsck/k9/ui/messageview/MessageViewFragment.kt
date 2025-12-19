@@ -462,7 +462,17 @@ class MessageViewFragment :
                     if (!messageViewInfo!!.isMessageIncomplete) {
                         val webView = MessageWebView(context)
                         val styledHtml = """
-                            <div style="padding: 18pt;">
+                            <style>
+                                @media print {
+                                    @page {
+                                        margin: 0.25in;
+                                    }
+                                    body {
+                                        margin: 0;
+                                    }
+                                }
+                            </style>
+                            <div>
                                 ${container.html}
                             </div>
                         """.trimIndent()
