@@ -12,7 +12,6 @@ internal fun AccountViewPreview() {
         AccountView(
             account = DISPLAY_ACCOUNT,
             onClick = {},
-            showAvatar = false,
         )
     }
 }
@@ -24,7 +23,6 @@ internal fun AccountViewWithColorPreview() {
         AccountView(
             account = DISPLAY_ACCOUNT,
             onClick = {},
-            showAvatar = false,
         )
     }
 }
@@ -36,7 +34,6 @@ internal fun AccountViewWithLongDisplayName() {
         AccountView(
             account = DISPLAY_ACCOUNT,
             onClick = {},
-            showAvatar = false,
         )
     }
 }
@@ -48,7 +45,6 @@ internal fun AccountViewWithLongEmailPreview() {
         AccountView(
             account = DISPLAY_ACCOUNT,
             onClick = {},
-            showAvatar = false,
         )
     }
 }

@@ -1,6 +1,5 @@
 package app.k9mail.feature.navigation.drawer.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,23 +40,18 @@ internal fun DrawerContent(
                 AccountView(
                     account = selectedAccount,
                     onClick = { onEvent(Event.OnAccountViewClick(selectedAccount)) },
-                    showAvatar = state.config.showAccountSelector,
                 )
 
                 DividerHorizontal()
             }
             Row {
-                AnimatedVisibility(
-                    visible = state.config.showAccountSelector,
-                ) {
-                    AccountList(
-                        accounts = state.accounts,
-                        selectedAccount = selectedAccount,
-                        onAccountClick = { onEvent(Event.OnAccountClick(it)) },
-                        onSyncAllAccountsClick = { onEvent(Event.OnSyncAllAccounts) },
-                        onSettingsClick = { onEvent(Event.OnSettingsClick) },
-                    )
-                }
+                AccountList(
+                    accounts = state.accounts,
+                    selectedAccount = selectedAccount,
+                    onAccountClick = { onEvent(Event.OnAccountClick(it)) },
+                    onSyncAllAccountsClick = { onEvent(Event.OnSyncAllAccounts) },
+                    onSettingsClick = { onEvent(Event.OnSettingsClick) },
+                )
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -74,9 +68,7 @@ internal fun DrawerContent(
                     )
                     DividerHorizontal()
                     SettingList(
-                        onAccountSelectorClick = { onEvent(Event.OnAccountSelectorClick) },
                         onManageFoldersClick = { onEvent(Event.OnManageFoldersClick) },
-                        showAccountSelector = state.config.showAccountSelector,
                     )
                 }
             }

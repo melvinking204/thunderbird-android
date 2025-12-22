@@ -35,7 +35,6 @@ internal class RealDrawerConfigManager(
 
     private fun loadDrawerConfig(): DrawerConfig {
         return DrawerConfig(
-            showAccountSelector = K9.isShowAccountSelector,
             showStarredCount = K9.isShowStarredCount,
             showUnifiedFolders = K9.isShowUnifiedInbox,
         )
@@ -83,7 +82,6 @@ internal class RealDrawerConfigManager(
     }
 
     private fun writeDrawerConfig(editor: StorageEditor, config: DrawerConfig) {
-        editor.putBoolean("showAccountSelector", config.showAccountSelector)
         editor.putBoolean("showUnifiedInbox", config.showUnifiedFolders)
         editor.putBoolean("showStarredCount", config.showStarredCount)
     }

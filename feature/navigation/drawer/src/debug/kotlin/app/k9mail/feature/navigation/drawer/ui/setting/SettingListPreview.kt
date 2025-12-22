@@ -9,9 +9,7 @@ import app.k9mail.core.ui.compose.designsystem.PreviewWithTheme
 internal fun SettingListPreview() {
     PreviewWithTheme {
         SettingList(
-            onAccountSelectorClick = {},
             onManageFoldersClick = {},
-            showAccountSelector = false,
         )
     }
 }
@@ -21,9 +19,7 @@ internal fun SettingListPreview() {
 internal fun SettingListShowAccountSelectorPreview() {
     PreviewWithTheme {
         SettingList(
-            onAccountSelectorClick = {},
             onManageFoldersClick = {},
-            showAccountSelector = true,
         )
     }
 }

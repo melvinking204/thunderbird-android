@@ -12,9 +12,7 @@ import app.k9mail.feature.navigation.drawer.R
 
 @Composable
 internal fun SettingList(
-    onAccountSelectorClick: () -> Unit,
     onManageFoldersClick: () -> Unit,
-    showAccountSelector: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -26,19 +24,6 @@ internal fun SettingList(
             label = stringResource(R.string.navigation_drawer_action_manage_folders),
             onClick = onManageFoldersClick,
             imageVector = Icons.Outlined.FolderManaged,
-        )
-        SettingListItem(
-            label = if (showAccountSelector) {
-                stringResource(R.string.navigation_drawer_action_hide_accounts)
-            } else {
-                stringResource(R.string.navigation_drawer_action_show_accounts)
-            },
-            onClick = onAccountSelectorClick,
-            imageVector = if (showAccountSelector) {
-                Icons.Outlined.ChevronLeft
-            } else {
-                Icons.Outlined.ChevronRight
-            },
         )
     }
 }

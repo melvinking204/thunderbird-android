@@ -1,6 +1,5 @@
 package app.k9mail.feature.navigation.drawer.ui.account
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +26,6 @@ import app.k9mail.feature.navigation.drawer.domain.entity.DisplayAccount
 internal fun AccountView(
     account: DisplayAccount,
     onClick: () -> Unit,
-    showAvatar: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -35,21 +33,19 @@ internal fun AccountView(
             .height(intrinsicSize = IntrinsicSize.Max),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AnimatedVisibility(visible = showAvatar) {
-            Surface(
-                color = MainTheme.colors.surfaceContainer,
-                modifier = Modifier.fillMaxHeight(),
+        Surface(
+            color = MainTheme.colors.surfaceContainer,
+            modifier = Modifier.fillMaxHeight(),
+        ) {
+            Box(
+                modifier = Modifier.width(MainTheme.sizes.large),
+                contentAlignment = Alignment.Center,
             ) {
-                Box(
-                    modifier = Modifier.width(MainTheme.sizes.large),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    AccountAvatar(
-                        account = account,
-                        onClick = null,
-                        selected = false,
-                    )
-                }
+                AccountAvatar(
+                    account = account,
+                    onClick = null,
+                    selected = false,
+                )
             }
         }
         Row(

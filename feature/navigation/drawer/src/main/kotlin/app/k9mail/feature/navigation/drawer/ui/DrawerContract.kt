@@ -17,7 +17,6 @@ internal interface DrawerContract {
         val config: DrawerConfig = DrawerConfig(
             showUnifiedFolders = false,
             showStarredCount = false,
-            showAccountSelector = true,
         ),
         val accounts: ImmutableList<DisplayAccount> = persistentListOf(),
         val selectedAccountId: String? = null,
@@ -32,7 +31,6 @@ internal interface DrawerContract {
         data class OnAccountClick(val account: DisplayAccount) : Event
         data class OnAccountViewClick(val account: DisplayAccount) : Event
         data class OnFolderClick(val folder: DisplayFolder) : Event
-        data object OnAccountSelectorClick : Event
         data object OnManageFoldersClick : Event
         data object OnSettingsClick : Event
         data object OnSyncAccount : Event
