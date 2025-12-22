@@ -201,7 +201,7 @@ class Account(
 
     @get:Synchronized
     @set:Synchronized
-    var showPictures = ShowPictures.NEVER
+    var showPictures = ShowPictures.ALWAYS
 
     @get:Synchronized
     @set:Synchronized

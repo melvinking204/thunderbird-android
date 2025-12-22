@@ -68,6 +68,7 @@ class AccountCreator(
         newAccount.isNotifyNewMail = account.options.showNotification
         newAccount.automaticCheckIntervalMinutes = account.options.checkFrequencyInMinutes
         newAccount.displayCount = account.options.messageDisplayCount
+        newAccount.showPictures = K9Account.ShowPictures.ALWAYS
 
         newAccount.deletePolicy = deletePolicyProvider.getDeletePolicy(newAccount.incomingServerSettings.type)
         newAccount.chipColor = accountColorPicker.pickColor()
