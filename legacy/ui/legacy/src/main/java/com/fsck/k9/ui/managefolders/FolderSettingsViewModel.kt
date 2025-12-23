@@ -6,12 +6,14 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.k9mail.core.mail.folder.api.Folder
 import app.k9mail.core.mail.folder.api.FolderDetails
+import app.k9mail.core.mail.folder.api.FolderType
 import app.k9mail.legacy.account.Account
 import app.k9mail.legacy.mailstore.FolderRepository
 import com.fsck.k9.Preferences
 import com.fsck.k9.controller.MessagingController
 import com.fsck.k9.helper.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -27,9 +29,14 @@ class FolderSettingsViewModel(
 
     private lateinit var account: Account
     private var folderId: Long = NO_FOLDER_ID
+    private var folderServerId: String? = null
+    private var isSpecialFolder: Boolean = false
 
     val showClearFolderInMenu: Boolean
         get() = this::account.isInitialized && folderId != NO_FOLDER_ID
+
+    val showDeleteFolderInMenu: Boolean
+        get() = this::account.isInitialized && folderId != NO_FOLDER_ID && !isSpecialFolder
 
     fun getFolderSettingsLiveData(accountUuid: String, folderId: Long): LiveData<FolderSettingsResult> {
         return folderSettingsLiveData ?: createFolderSettingsLiveData(accountUuid, folderId).also {
@@ -52,6 +59,8 @@ class FolderSettingsViewModel(
 
             this@FolderSettingsViewModel.account = account
             this@FolderSettingsViewModel.folderId = folderId
+            this@FolderSettingsViewModel.folderServerId = folderRepository.getFolderServerId(account, folderId)
+            this@FolderSettingsViewModel.isSpecialFolder = folderDetails.folder.type != FolderType.REGULAR
 
             val folderSettingsData = FolderSettingsData(
                 folder = folderDetails.folder,
@@ -81,6 +90,20 @@ class FolderSettingsViewModel(
         messagingController.clearFolder(account, folderId)
     }
 
+    fun showDeleteFolderConfirmationDialog() {
+        sendActionEvent(Action.ShowDeleteFolderConfirmationDialog)
+    }
+
+    fun onDeleteFolderConfirmation() {
+        val serverId = folderServerId ?: return
+        messagingController.deleteFolder(account, serverId) {
+            viewModelScope.launch {
+                messagingController.refreshFolderList(account)
+                sendActionEvent(Action.NavigateBack)
+            }
+        }
+    }
+
     fun getActionEvents(): LiveData<Action> = actionLiveData
 
     private fun sendActionEvent(action: Action) {
@@ -94,4 +117,6 @@ data class FolderSettingsData(val folder: Folder, val dataStore: FolderSettingsD
 
 sealed class Action {
     object ShowClearFolderConfirmationDialog : Action()
+    object ShowDeleteFolderConfirmationDialog : Action()
+    object NavigateBack : Action()
 }

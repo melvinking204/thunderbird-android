@@ -18,6 +18,12 @@ interface Backend {
     val isPushCapable: Boolean
 
     @Throws(MessagingException::class)
+    fun createFolder(folderName: String)
+
+    @Throws(MessagingException::class)
+    fun deleteFolder(folderServerId: String)
+
+    @Throws(MessagingException::class)
     fun refreshFolderList()
 
     // TODO: Add a way to cancel the sync process

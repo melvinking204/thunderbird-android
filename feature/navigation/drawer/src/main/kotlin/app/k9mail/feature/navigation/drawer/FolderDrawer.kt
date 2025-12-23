@@ -61,7 +61,11 @@ class FolderDrawer(
         get() = drawer.isOpen
 
     override fun updateUserAccountsAndFolders(account: Account?) {
-        // no-op
+        drawerState.update {
+            it.copy(
+                selectedAccountUuid = account?.uuid,
+            )
+        }
     }
 
     override fun selectAccount(accountUuid: String) {

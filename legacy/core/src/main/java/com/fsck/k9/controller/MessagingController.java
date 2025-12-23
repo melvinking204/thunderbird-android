@@ -371,6 +371,64 @@ public class MessagingController implements MessagingControllerRegistry, Messagi
         cache.removeFlagForThreads(messageIds, flag);
     }
 
+    public void createFolder(Account account, String folderName, final Runnable callback) {
+        put("createFolder", null, () -> {
+            createFolderSynchronous(account, folderName);
+            if (callback != null) {
+                callback.run();
+            }
+        });
+    }
+
+    private void createFolderSynchronous(Account account, String folderName) {
+        try {
+            Backend backend = getBackend(account);
+            backend.createFolder(folderName);
+        } catch (Exception e) {
+            handleException(account, e);
+        }
+    }
+
+    public void deleteFolder(Account account, String folderServerId, final Runnable callback) {
+        put("deleteFolder", null, () -> {
+            deleteFolderSynchronous(account, folderServerId);
+            if (callback != null) {
+                callback.run();
+            }
+        });
+    }
+
+    private void deleteFolderSynchronous(Account account, String folderServerId) {
+        try {
+            Backend backend = getBackend(account);
+            backend.deleteFolder(folderServerId);
+
+            // After remote deletion, we must also delete it locally.
+            deleteLocalFolder(account, folderServerId);
+        } catch (UnsupportedOperationException e) {
+            // Backend doesn't support remote folder deletion. Delete locally only.
+            deleteLocalFolder(account, folderServerId);
+        } catch (Exception e) {
+            handleException(account, e);
+        }
+    }
+
+    private void deleteLocalFolder(Account account, String folderServerId) {
+        try {
+            LocalStore localStore = localStoreProvider.getInstance(account);
+            Long folderId = messageStoreManager.getMessageStore(account).getFolderId(folderServerId);
+            if (folderId != null) {
+                localStore.deleteFolder(folderId);
+
+                for (MessagingListener l : getListeners()) {
+                    l.folderListChanged(account);
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e, "Error deleting local folder %s", folderServerId);
+        }
+    }
+
     public void refreshFolderList(final Account account) {
         put("refreshFolderList", null, () -> refreshFolderListSynchronous(account));
     }

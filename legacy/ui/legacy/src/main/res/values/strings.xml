@@ -65,6 +65,12 @@
     <string name="check_mail_action">Check mail</string>
     <string name="send_messages_action">Send messages</string>
     <string name="refresh_folders_action">Refresh folder list</string>
+    <string name="create_folder_action">Create folder</string>
+    <string name="folder_name_hint">Folder name</string>
+    <string name="create_folder_imap_message">New folder will be created on the email server</string>
+    <string name="create_folder_pop3_message">New folder will be created on your device</string>
+    <string name="okay_action">OK</string>
+    <string name="cancel_action">Cancel</string>
     <string name="filter_folders_action">Find folder</string>
     <string name="add_account_action">Add account</string>
     <string name="compose_action">Compose</string>
@@ -709,6 +715,12 @@
     <string name="dialog_confirm_clear_local_folder_title">Clear local messages?</string>
     <string name="dialog_confirm_clear_local_folder_message">This will remove all local messages from the folder. No messages will be deleted from the server.</string>
     <string name="dialog_confirm_clear_local_folder_action">Clear messages</string>
+
+    <string name="dialog_confirm_delete_folder_title">Delete folder?</string>
+    <string name="dialog_confirm_delete_folder_message">Are you sure you want to delete this folder and all its messages? This action cannot be undone.</string>
+    <string name="dialog_confirm_delete_folder_action">Delete folder</string>
+
+    <string name="delete_folder_action">Delete folder</string>
 
     <string name="dialog_confirm_delete_title">Confirm deletion</string>
     <string name="dialog_confirm_delete_message">Do you want to delete this message?</string>

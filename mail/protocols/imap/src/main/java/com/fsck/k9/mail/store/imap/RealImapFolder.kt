@@ -235,7 +235,7 @@ internal class RealImapFolder(
     }
 
     @Throws(MessagingException::class)
-    fun create(): Boolean {
+    override fun create(): Boolean {
         /*
          * This method needs to operate in the unselected mode as well as the selected mode
          * so we must get the connection ourselves if it's not there. We are specifically
@@ -253,6 +253,30 @@ internal class RealImapFolder(
             true
         } catch (e: NegativeImapResponseException) {
             false
+        } catch (ioe: IOException) {
+            throw ioExceptionHandler(this.connection, ioe)
+        } finally {
+            if (this.connection == null) {
+                connectionManager.releaseConnection(connection)
+            }
+        }
+    }
+
+    @Throws(MessagingException::class)
+    override fun delete() {
+        /*
+         * This method needs to operate in the unselected mode as well as the selected mode
+         * so we must get the connection ourselves if it's not there. We are specifically
+         * not calling checkOpen() since we don't care if the folder is open.
+         */
+        val connection = synchronized(this) {
+            this.connection ?: connectionManager.getConnection()
+        }
+
+        try {
+            val encodedFolderName = folderNameCodec.encode(prefixedName)
+            val escapedFolderName = ImapUtility.encodeString(encodedFolderName)
+            connection.executeSimpleCommand(String.format("DELETE %s", escapedFolderName))
         } catch (ioe: IOException) {
             throw ioExceptionHandler(this.connection, ioe)
         } finally {

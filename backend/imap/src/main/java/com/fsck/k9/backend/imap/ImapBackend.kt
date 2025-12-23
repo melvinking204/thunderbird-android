@@ -6,9 +6,11 @@ import com.fsck.k9.backend.api.BackendPusherCallback
 import com.fsck.k9.backend.api.BackendStorage
 import com.fsck.k9.backend.api.SyncConfig
 import com.fsck.k9.backend.api.SyncListener
+import com.fsck.k9.logging.Timber
 import com.fsck.k9.mail.BodyFactory
 import com.fsck.k9.mail.Flag
 import com.fsck.k9.mail.Message
+import com.fsck.k9.mail.MessagingException
 import com.fsck.k9.mail.Part
 import com.fsck.k9.mail.power.PowerManager
 import com.fsck.k9.mail.store.imap.IdleRefreshManager
@@ -47,6 +49,35 @@ class ImapBackend(
     override val supportsSearchByDate = true
     override val supportsFolderSubscriptions = true
     override val isPushCapable = true
+
+    private fun handleException(e: Exception) {
+        Timber.e(e, "Error during IMAP folder operation")
+        // You might want to inform the user here, e.g., via a Toast or by throwing a UI-level exception
+        // For now, we'll rethrow as MessagingException to be handled higher up.
+        throw MessagingException("IMAP folder operation failed", e)
+    }
+
+    override fun createFolder(folderName: String) {
+        try {
+            val folder = imapStore.getFolder(folderName)
+            folder.create()
+        } catch (e: MessagingException) {
+            handleException(e) // Use the handleException method
+        } catch (e: Exception) { // Catch other potential exceptions too
+            handleException(e)
+        }
+    }
+
+    override fun deleteFolder(folderServerId: String) {
+        try {
+            val folder = imapStore.getFolder(folderServerId)
+            folder.delete()
+        } catch (e: MessagingException) {
+            handleException(e) // Use the handleException method
+        } catch (e: Exception) { // Catch other potential exceptions too
+            handleException(e)
+        }
+    }
 
     override fun refreshFolderList() {
         commandRefreshFolderList.refreshFolderList()

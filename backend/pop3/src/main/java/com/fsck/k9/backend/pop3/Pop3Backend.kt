@@ -4,10 +4,12 @@ import com.fsck.k9.backend.api.Backend
 import com.fsck.k9.backend.api.BackendPusher
 import com.fsck.k9.backend.api.BackendPusherCallback
 import com.fsck.k9.backend.api.BackendStorage
+import com.fsck.k9.backend.api.FolderInfo
 import com.fsck.k9.backend.api.SyncConfig
 import com.fsck.k9.backend.api.SyncListener
 import com.fsck.k9.mail.BodyFactory
 import com.fsck.k9.mail.Flag
+import com.fsck.k9.mail.FolderType
 import com.fsck.k9.mail.Message
 import com.fsck.k9.mail.Part
 import com.fsck.k9.mail.store.pop3.Pop3Store
@@ -15,7 +17,7 @@ import com.fsck.k9.mail.transport.smtp.SmtpTransport
 
 class Pop3Backend(
     accountName: String,
-    backendStorage: BackendStorage,
+    private val backendStorage: BackendStorage,
     private val pop3Store: Pop3Store,
     private val smtpTransport: SmtpTransport,
 ) : Backend {
@@ -33,6 +35,19 @@ class Pop3Backend(
     override val supportsSearchByDate = false
     override val supportsFolderSubscriptions = false
     override val isPushCapable = false
+
+    override fun createFolder(folderName: String) {
+        val folderInfo = FolderInfo(folderName, folderName, FolderType.REGULAR)
+        backendStorage.createFolderUpdater().use { updater ->
+            updater.createFolders(listOf(folderInfo))
+        }
+    }
+
+    override fun deleteFolder(folderServerId: String) {
+        backendStorage.createFolderUpdater().use { updater ->
+            updater.deleteFolders(listOf(folderServerId))
+        }
+    }
 
     override fun refreshFolderList() {
         commandRefreshFolderList.refreshFolderList()

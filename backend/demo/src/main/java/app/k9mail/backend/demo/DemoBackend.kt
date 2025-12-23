@@ -38,6 +38,14 @@ class DemoBackend(private val backendStorage: BackendStorage) : Backend {
     override val supportsFolderSubscriptions: Boolean = false
     override val isPushCapable: Boolean = false
 
+    override fun createFolder(folderName: String) {
+        throw UnsupportedOperationException("not implemented")
+    }
+
+    override fun deleteFolder(folderServerId: String) {
+        throw UnsupportedOperationException("not implemented")
+    }
+
     override fun refreshFolderList() {
         val localFolderServerIds = backendStorage.getFolderServerIds().toSet()
 

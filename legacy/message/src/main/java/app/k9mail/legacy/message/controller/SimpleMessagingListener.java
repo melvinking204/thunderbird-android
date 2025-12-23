@@ -70,6 +70,10 @@ public abstract class SimpleMessagingListener implements MessagingListener {
     }
 
     @Override
+    public void folderListChanged(Account account) {
+    }
+
+    @Override
     public void messageUidChanged(Account account, long folderId, String oldUid, String newUid) {
     }
 

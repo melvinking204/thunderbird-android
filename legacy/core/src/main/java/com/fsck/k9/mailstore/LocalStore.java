@@ -259,6 +259,18 @@ public class LocalStore {
         database.delete();
     }
 
+    public void deleteFolder(final long folderId) throws MessagingException {
+        database.execute(true, (DbCallback<Void>) db -> {
+            LocalFolder localFolder = getFolder(folderId);
+            localFolder.open();
+            localFolder.clearAllMessages();
+
+            db.delete("folders", "id = ?", new String[] { Long.toString(folderId) });
+            return null;
+        });
+        notifyChange();
+    }
+
     public void resetVisibleLimits(int visibleLimit) throws MessagingException {
         final ContentValues cv = new ContentValues();
         cv.put("visible_limit", Integer.toString(visibleLimit));

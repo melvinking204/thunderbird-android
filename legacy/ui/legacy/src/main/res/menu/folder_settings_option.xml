@@ -10,4 +10,10 @@
         app:showAsAction="never"
         />
 
+    <item
+        android:id="@+id/delete_folder"
+        android:title="@string/delete_folder_action"
+        app:showAsAction="never"
+        />
+
 </menu>

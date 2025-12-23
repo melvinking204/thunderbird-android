@@ -46,7 +46,7 @@ class FolderSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFra
                 }
             }
 
-        viewModel.getActionEvents().observeNotNull(this) { handleActionEvents(it) }
+        viewModel.getActionEvents().observeNotNull(viewLifecycleOwner) { handleActionEvents(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -55,12 +55,19 @@ class FolderSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFra
 
         val clearFolderItem = menu.findItem(R.id.clear_local_folder)
         clearFolderItem.isVisible = viewModel.showClearFolderInMenu
+
+        val deleteFolderItem = menu.findItem(R.id.delete_folder)
+        deleteFolderItem.isVisible = viewModel.showDeleteFolderInMenu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.clear_local_folder -> {
                 viewModel.showClearFolderConfirmationDialog()
+                true
+            }
+            R.id.delete_folder -> {
+                viewModel.showDeleteFolderConfirmationDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -92,6 +99,8 @@ class FolderSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFra
     private fun handleActionEvents(action: Action) {
         when (action) {
             is Action.ShowClearFolderConfirmationDialog -> showClearFolderConfirmationDialog()
+            is Action.ShowDeleteFolderConfirmationDialog -> showDeleteFolderConfirmationDialog()
+            is Action.NavigateBack -> navigateBack()
         }
     }
 
@@ -107,6 +116,18 @@ class FolderSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFra
         dialogFragment.show(requireFragmentManager(), TAG_CLEAR_FOLDER_CONFIRMATION)
     }
 
+    private fun showDeleteFolderConfirmationDialog() {
+        val dialogFragment = ConfirmationDialogFragment.newInstance(
+            DIALOG_DELETE_FOLDER,
+            getString(R.string.dialog_confirm_delete_folder_title),
+            getString(R.string.dialog_confirm_delete_folder_message),
+            getString(R.string.dialog_confirm_delete_folder_action),
+            getString(BaseR.string.cancel_action),
+        )
+        dialogFragment.setTargetFragment(this, REQUEST_DELETE_FOLDER)
+        dialogFragment.show(requireFragmentManager(), TAG_DELETE_FOLDER_CONFIRMATION)
+    }
+
     private fun setPreferenceVisibility(folderSettings: FolderSettingsData) {
         if (folderSettings.folder.isLocalOnly) {
             requirePreference<Preference>(PREFERENCE_SYNC).isVisible = false
@@ -119,6 +140,9 @@ class FolderSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFra
         when (dialogId) {
             DIALOG_CLEAR_FOLDER -> {
                 viewModel.onClearFolderConfirmation()
+            }
+            DIALOG_DELETE_FOLDER -> {
+                viewModel.onDeleteFolderConfirmation()
             }
         }
     }
@@ -138,6 +162,10 @@ class FolderSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFra
         private const val DIALOG_CLEAR_FOLDER = 1
         private const val REQUEST_CLEAR_FOLDER = 1
         private const val TAG_CLEAR_FOLDER_CONFIRMATION = "clear_folder_confirmation"
+
+        private const val DIALOG_DELETE_FOLDER = 2
+        private const val REQUEST_DELETE_FOLDER = 2
+        private const val TAG_DELETE_FOLDER_CONFIRMATION = "delete_folder_confirmation"
 
         private const val PREFERENCE_TOP_CATEGORY = "folder_settings"
         private const val PREFERENCE_SYNC = "folder_settings_sync"

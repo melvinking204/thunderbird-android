@@ -20,6 +20,12 @@ interface ImapFolder {
     fun exists(): Boolean
 
     @Throws(MessagingException::class)
+    fun create(): Boolean
+
+    @Throws(MessagingException::class)
+    fun delete()
+
+    @Throws(MessagingException::class)
     fun open(mode: OpenMode)
 
     fun close()

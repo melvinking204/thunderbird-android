@@ -1,5 +1,6 @@
 package com.fsck.k9.ui.managefolders
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -7,6 +8,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -56,6 +59,11 @@ class ManageFoldersFragment : Fragment() {
         viewModel.getFolders(account).observeNotNull(this) { folders ->
             updateFolderList(folders)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshFolderList()
     }
 
     private fun initializeFolderList() {
@@ -120,11 +128,38 @@ class ManageFoldersFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.create_folder -> onCreateFolder()
             R.id.list_folders -> refreshFolderList()
             else -> return super.onOptionsItemSelected(item)
         }
 
         return true
+    }
+
+    private fun onCreateFolder() {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.create_folder_dialog, null)
+        val folderNameInput = dialogView.findViewById<EditText>(R.id.folder_name)
+        val messageView = dialogView.findViewById<TextView>(R.id.folder_location_message)
+
+        if (account.incomingServerSettings.type == "pop3") {
+            messageView.text = getString(R.string.create_folder_pop3_message)
+        } else {
+            messageView.text = getString(R.string.create_folder_imap_message)
+        }
+
+        AlertDialog.Builder(context)
+            .setTitle(R.string.create_folder_action)
+            .setView(dialogView)
+            .setPositiveButton(R.string.okay_action) { _, _ ->
+                val folderName = folderNameInput.text.toString()
+                if (folderName.isNotEmpty()) {
+                    messagingController.createFolder(account, folderName) {
+                        refreshFolderList()
+                    }
+                }
+            }
+            .setNegativeButton(R.string.cancel_action, null)
+            .show()
     }
 
     private fun refreshFolderList() {

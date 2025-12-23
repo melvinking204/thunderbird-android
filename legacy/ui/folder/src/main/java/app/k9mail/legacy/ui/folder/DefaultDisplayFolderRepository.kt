@@ -65,6 +65,12 @@ class DefaultDisplayFolderRepository(
                         trySendBlocking(getDisplayFolders(account, includeHiddenFolders))
                     }
                 }
+
+                override fun folderListChanged(statusChangedAccount: Account) {
+                    if (statusChangedAccount.uuid == account.uuid) {
+                        trySendBlocking(getDisplayFolders(account, includeHiddenFolders))
+                    }
+                }
             }
             messagingController.addListener(folderStatusChangedListener)
 

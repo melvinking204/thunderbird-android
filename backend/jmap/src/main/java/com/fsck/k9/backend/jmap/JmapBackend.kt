@@ -40,6 +40,14 @@ class JmapBackend(
     override val supportsFolderSubscriptions = false // TODO: add support
     override val isPushCapable = false // FIXME
 
+    override fun createFolder(folderName: String) {
+        throw UnsupportedOperationException("not implemented")
+    }
+
+    override fun deleteFolder(folderServerId: String) {
+        throw UnsupportedOperationException("not implemented")
+    }
+
     override fun refreshFolderList() {
         commandRefreshFolderList.refreshFolderList()
     }

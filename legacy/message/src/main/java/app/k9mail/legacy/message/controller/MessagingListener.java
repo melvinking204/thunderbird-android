@@ -30,6 +30,7 @@ public interface MessagingListener {
     void checkMailFinished(Context context, Account account);
 
     void folderStatusChanged(Account account, long folderId);
+    void folderListChanged(Account account);
 
     void messageUidChanged(Account account, long folderId, String oldUid, String newUid);
 
