@@ -851,7 +851,8 @@
 
     <!-- Note: This references message_view_download_remainder -->
     <string name="preview_encrypted">*Encrypted*</string>
-    <string name="add_from_contacts">Add from Contacts</string>
+    <string name="add_from_contacts">Add contact</string>
+    <string name="add_group">Add group</string>
     <string name="recipient_cc">Cc</string>
     <string name="recipient_bcc">Bcc</string>
     <string name="recipient_to">To</string>

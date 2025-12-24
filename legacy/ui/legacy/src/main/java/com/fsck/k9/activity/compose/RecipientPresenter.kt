@@ -70,7 +70,8 @@ class RecipientPresenter(
     private var hasContactPicker: Boolean? = null
     private var isReplyToEncryptedMessage = false
 
-    private var lastFocusedType = RecipientType.TO
+    var lastFocusedType = RecipientType.TO
+        private set
     private var currentCryptoMode = CryptoMode.NO_CHOICE
 
     var isForceTextMessageFormat = false
@@ -500,6 +501,11 @@ class RecipientPresenter(
                 abandon()
             }
         }.startLoading()
+    }
+
+    fun addRecipientsFromStrings(recipientType: RecipientType, emailAddresses: List<out String>) {
+        val addresses = emailAddresses.flatMap { Address.parse(it).toList() }.toTypedArray()
+        addRecipientsFromAddresses(recipientType, *addresses)
     }
 
     private fun addRecipientFromContactUri(recipientType: RecipientType, uri: Uri?) {

@@ -2,8 +2,10 @@ package com.fsck.k9.activity;
 
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -38,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -64,6 +67,7 @@ import com.fsck.k9.activity.compose.IdentityAdapter.IdentityContainer;
 import com.fsck.k9.activity.compose.PgpEnabledErrorDialog.OnOpenPgpDisableListener;
 import com.fsck.k9.activity.compose.PgpInlineDialog.OnOpenPgpInlineChangeListener;
 import com.fsck.k9.activity.compose.PgpSignOnlyDialog.OnOpenPgpSignOnlyChangeListener;
+import com.fsck.k9.activity.compose.PickEmailGroupContract;
 import com.fsck.k9.activity.compose.RecipientMvpView;
 import com.fsck.k9.activity.compose.RecipientPresenter;
 import com.fsck.k9.activity.compose.ReplyToPresenter;
@@ -117,9 +121,12 @@ import com.fsck.k9.ui.helper.SizeFormatter;
 import com.fsck.k9.ui.messagelist.DefaultFolderProvider;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
+
 import org.openintents.openpgp.OpenPgpApiManager;
 import org.openintents.openpgp.util.OpenPgpIntentStarter;
 import timber.log.Timber;
+
+import kotlin.Unit;
 
 
 @SuppressWarnings("deprecation") // TODO get rid of activity dialogs and indeterminate progress bars
@@ -242,6 +249,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private boolean navigateUp;
 
     private boolean sendMessageHasBeenTriggered = false;
+
+    private ActivityResultLauncher<Unit> groupPickerLauncher;
+    private RecipientType recipientTypeForGroupPicking;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -503,6 +513,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             setProgressBarIndeterminateVisibility(true);
             currentMessageBuilder.reattachCallback(this);
         }
+
+        groupPickerLauncher = registerForActivityResult(new PickEmailGroupContract(), emails -> {
+            if (emails != null && !emails.isEmpty()) {
+                recipientPresenter.addRecipientsFromStrings(recipientTypeForGroupPicking, new ArrayList<>(emails));
+            }
+        });
 
     }
 
@@ -935,6 +951,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             askBeforeDiscard();
         } else if (id == R.id.add_from_contacts) {
             recipientPresenter.onMenuAddFromContacts();
+        } else if (id == R.id.add_group) {
+            recipientTypeForGroupPicking = recipientPresenter.getLastFocusedType();
+            try {
+                groupPickerLauncher.launch(null);
+            } catch (android.content.ActivityNotFoundException e) {
+                Toast.makeText(this, "No group picker app found.", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.openpgp_encrypt_disable) {
             recipientPresenter.onMenuToggleEncryption();
             updateMessageFormat();
