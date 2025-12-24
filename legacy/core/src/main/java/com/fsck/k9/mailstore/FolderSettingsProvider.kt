@@ -12,12 +12,14 @@ class FolderSettingsProvider(val preferences: Preferences, val account: Account)
         val storage = preferences.storage
         val prefix = "${account.uuid}.$folderServerId"
 
+        val isInbox = folderServerId.equals("INBOX", ignoreCase = true)
+
         return FolderSettings(
             visibleLimit = account.displayCount,
             isVisible = storage.getBoolean("$prefix.visible", true),
             isSyncEnabled = storage.getBoolean("$prefix.syncEnabled", false),
             isNotificationsEnabled = storage.getBoolean("$prefix.notificationsEnabled", false),
-            isPushEnabled = storage.getBoolean("$prefix.pushEnabled", false),
+            isPushEnabled = storage.getBoolean("$prefix.pushEnabled", isInbox),
             inTopGroup = storage.getBoolean("$prefix.inTopGroup", false),
             integrate = storage.getBoolean("$prefix.integrate", false),
         ).also {
