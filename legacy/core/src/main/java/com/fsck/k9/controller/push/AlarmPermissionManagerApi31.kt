@@ -56,4 +56,6 @@ internal class AlarmPermissionManagerApi31(
             context.unregisterReceiver(receiver)
         }
     }
+
+    override var isPermissionRequired: Boolean = false
 }

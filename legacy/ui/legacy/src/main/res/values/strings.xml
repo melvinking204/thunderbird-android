@@ -1097,4 +1097,11 @@ You can keep this message and use it as a backup for your secret key. If you wan
     <string name="settings_ui_telemetry_title">Usage and technical data</string>
     <!-- Description of the "Usage and technical data" setting used in the "data collection" section of the general settings screen -->
     <string name="settings_ui_telemetry_description">Shares performance, usage, hardware and customization data about this app with Mozilla to help us make Thunderbird better</string>
+
+    <!-- Title of the dialog asking the user to grant the SCHEDULE_EXACT_ALARM permission -->
+    <string name="alarm_permission_dialog_title">Permission required</string>
+    <!-- Message of the dialog asking the user to grant the SCHEDULE_EXACT_ALARM permission -->
+    <string name="alarm_permission_dialog_message">To ensure timely email synchronization, <xliff:g id="app_name">%s</xliff:g> needs permission to schedule exact alarms.</string>
+    <!-- Button to open the system settings screen to grant the SCHEDULE_EXACT_ALARM permission -->
+    <string name="alarm_permission_dialog_button_settings">Go to Settings</string>
 </resources>

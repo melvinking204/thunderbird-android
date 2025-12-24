@@ -8,7 +8,7 @@ import android.provider.Settings
 /**
  * Checks whether the app can schedule exact alarms.
  */
-internal interface AlarmPermissionManager {
+interface AlarmPermissionManager {
     /**
      * Checks whether the app can schedule exact alarms.
      *
@@ -26,6 +26,11 @@ internal interface AlarmPermissionManager {
      * Unregister the listener registered via [registerListener].
      */
     fun unregisterListener()
+
+    /**
+     * Whether the permission to schedule exact alarms is required by a feature.
+     */
+    var isPermissionRequired: Boolean
 }
 
 /**
@@ -45,6 +50,6 @@ internal fun AlarmPermissionManager(context: Context, alarmManager: AlarmManager
  * Note: Currently Android stops (and potentially restarts) the app when the permission is revoked. So there's no
  * callback mechanism for the permission revocation case.
  */
-internal fun interface AlarmPermissionListener {
+fun interface AlarmPermissionListener {
     fun onAlarmPermissionGranted()
 }

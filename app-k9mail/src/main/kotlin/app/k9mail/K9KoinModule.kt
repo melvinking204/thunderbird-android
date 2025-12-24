@@ -51,4 +51,5 @@ val appConfig = AppConfig(
         UnreadWidgetProvider::class.java,
         MessageListWidgetProvider::class.java,
     ),
+    appName = "Email"
 )

@@ -1,11 +1,15 @@
 package com.fsck.k9.activity
 
+import android.app.AlarmManager
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.Settings
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +17,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isGone
@@ -41,6 +46,7 @@ import app.k9mail.legacy.search.api.SearchAttribute
 import app.k9mail.legacy.search.api.SearchCondition
 import app.k9mail.legacy.search.api.SearchField
 import app.k9mail.legacy.search.api.SearchSpecification
+import com.fsck.k9.AppConfig
 import com.fsck.k9.CoreResourceProvider
 import com.fsck.k9.K9
 import com.fsck.k9.K9.PostMarkAsUnreadNavigation
@@ -50,6 +56,7 @@ import com.fsck.k9.Preferences
 import com.fsck.k9.account.BackgroundAccountRemover
 import com.fsck.k9.activity.compose.MessageActions
 import com.fsck.k9.controller.MessagingController
+import com.fsck.k9.controller.push.AlarmPermissionManager
 import com.fsck.k9.helper.ParcelableUtil
 import com.fsck.k9.search.isUnifiedInbox
 import com.fsck.k9.ui.BuildConfig
@@ -66,6 +73,7 @@ import com.fsck.k9.ui.messageview.PlaceholderFragment
 import com.fsck.k9.ui.settings.SettingsActivity
 import com.fsck.k9.view.ViewSwitcher
 import com.fsck.k9.view.ViewSwitcher.OnSwitchCompleteListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
@@ -94,6 +102,8 @@ open class MessageList :
     private val contactRepository: ContactRepository by inject()
     private val coreResourceProvider: CoreResourceProvider by inject()
     private val fundingManager: FundingManager by inject()
+    private val alarmPermissionManager: AlarmPermissionManager by inject()
+    private val appConfig: AppConfig by inject()
 
     private lateinit var actionBar: ActionBar
     private var searchView: SearchView? = null
@@ -111,6 +121,7 @@ open class MessageList :
     private var singleFolderMode = false
 
     private var messageListActivityConfig: MessageListActivityConfig? = null
+    private var alarmPermissionDialog: AlertDialog? = null
 
     /**
      * `true` if the message list should be displayed as flat list (i.e. no threading)
@@ -548,9 +559,13 @@ open class MessageList :
         if (displayMode != DisplayMode.MESSAGE_VIEW) {
             onMessageListDisplayed()
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && alarmPermissionManager.isPermissionRequired) {
+            showAlarmPermissionDialog()
+        }
     }
 
-    override fun onStart() {
+    public override fun onStart() {
         super.onStart()
 
         if (contactRepository is CachingRepository) {
@@ -1295,7 +1310,9 @@ open class MessageList :
 
         if (isAdditionalMessageListDisplayed) {
             lockDrawer()
-        } else {
+        }
+
+        else {
             unlockDrawer()
         }
     }
@@ -1413,6 +1430,30 @@ open class MessageList :
             unifiedInboxTitle = coreResourceProvider.searchUnifiedInboxTitle(),
             unifiedInboxDetail = coreResourceProvider.searchUnifiedInboxDetail(),
         )
+    }
+
+    private fun showAlarmPermissionDialog() {
+        if (alarmPermissionDialog?.isShowing == true) {
+            return
+        }
+
+        alarmPermissionDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.alarm_permission_dialog_title)
+            .setMessage(getString(R.string.alarm_permission_dialog_message, appConfig.appName))
+            .setPositiveButton(R.string.alarm_permission_dialog_button_settings) { dialog, _ ->
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                    data = Uri.parse("package:" + packageName)
+                }
+                startActivity(intent)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel_action) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setOnDismissListener {
+                alarmPermissionManager.isPermissionRequired = false
+            }
+            .show()
     }
 
     private enum class DisplayMode {
