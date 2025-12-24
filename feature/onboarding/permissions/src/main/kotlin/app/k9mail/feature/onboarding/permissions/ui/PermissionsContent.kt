@@ -132,6 +132,18 @@ private fun PermissionBoxes(
             onAllowClick = { onEvent(Event.AllowNotificationsPermissionClicked) },
         )
     }
+
+    if (state.isAlarmPermissionVisible) {
+        Spacer(modifier = Modifier.height(MainTheme.spacings.quadruple))
+
+        PermissionBox(
+            icon = IconsWithBottomRightOverlay.schedule,
+            permissionState = state.alarmPermissionState,
+            title = stringResource(R.string.onboarding_permissions_alarm_title),
+            description = stringResource(R.string.onboarding_permissions_alarm_description),
+            onAllowClick = { onEvent(Event.AllowAlarmPermissionClicked) },
+        )
+    }
 }
 
 @Composable

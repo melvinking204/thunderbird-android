@@ -1,6 +1,7 @@
 package app.k9mail.core.android.permissions
 
 import android.Manifest
+import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -21,6 +22,18 @@ class AndroidPermissionChecker(
             Permission.Notifications -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    PermissionState.GrantedImplicitly
+                }
+            }
+            Permission.Alarm -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    if (alarmManager.canScheduleExactAlarms()) {
+                        PermissionState.Granted
+                    } else {
+                        PermissionState.Denied
+                    }
                 } else {
                     PermissionState.GrantedImplicitly
                 }

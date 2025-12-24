@@ -9,7 +9,9 @@ interface PermissionsContract {
         val isLoading: Boolean = true,
         val contactsPermissionState: UiPermissionState = UiPermissionState.Unknown,
         val notificationsPermissionState: UiPermissionState = UiPermissionState.Unknown,
+        val alarmPermissionState: UiPermissionState = UiPermissionState.Unknown,
         val isNotificationsPermissionVisible: Boolean = false,
+        val isAlarmPermissionVisible: Boolean = false,
         val isNextButtonVisible: Boolean = false,
     )
 
@@ -18,9 +20,11 @@ interface PermissionsContract {
 
         data object AllowContactsPermissionClicked : Event
         data object AllowNotificationsPermissionClicked : Event
+        data object AllowAlarmPermissionClicked : Event
 
         data class ContactsPermissionResult(val success: Boolean) : Event
         data class NotificationsPermissionResult(val success: Boolean) : Event
+        data class AlarmPermissionResult(val success: Boolean) : Event
 
         data object NextClicked : Event
     }
@@ -28,6 +32,7 @@ interface PermissionsContract {
     sealed interface Effect {
         data object RequestContactsPermission : Effect
         data object RequestNotificationsPermission : Effect
+        data object RequestAlarmPermission : Effect
 
         data object NavigateNext : Effect
     }

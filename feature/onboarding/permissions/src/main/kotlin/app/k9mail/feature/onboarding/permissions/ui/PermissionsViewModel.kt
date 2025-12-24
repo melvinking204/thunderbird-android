@@ -25,18 +25,21 @@ class PermissionsViewModel(
             Event.LoadPermissionState -> handleOneTimeEvent(event, ::loadPermissionState)
             Event.AllowContactsPermissionClicked -> handleAllowContactsPermissionClicked()
             Event.AllowNotificationsPermissionClicked -> handleAllowNotificationsPermissionClicked()
+            Event.AllowAlarmPermissionClicked -> handleAllowAlarmPermissionClicked()
             is Event.ContactsPermissionResult -> handleContactsPermissionResult(event.success)
             is Event.NotificationsPermissionResult -> handleNotificationsPermissionResult(event.success)
+            is Event.AlarmPermissionResult -> handleAlarmPermissionResult(event.success)
             Event.NextClicked -> handleNextClicked()
         }
     }
 
     private fun loadPermissionState() {
         viewModelScope.launch {
-            val (contactsPermissionState, notificationsPermissionState) = withContext(backgroundDispatcher) {
+            val (contactsPermissionState, notificationsPermissionState, alarmPermissionState) = withContext(backgroundDispatcher) {
                 arrayOf(
                     checkPermission(Permission.Contacts),
                     checkPermission(Permission.Notifications),
+                    checkPermission(Permission.Alarm),
                 )
             }
 
@@ -50,14 +53,23 @@ class PermissionsViewModel(
                 PermissionState.Granted -> UiPermissionState.Granted
                 PermissionState.Denied -> UiPermissionState.Unknown
             }
+            val alarmUiPermissionState = when (alarmPermissionState) {
+                PermissionState.GrantedImplicitly -> UiPermissionState.Unknown
+                PermissionState.Granted -> UiPermissionState.Granted
+                PermissionState.Denied -> UiPermissionState.Unknown
+            }
+
             val isNotificationsPermissionVisible = notificationsPermissionState != PermissionState.GrantedImplicitly
+            val isAlarmPermissionVisible = alarmPermissionState != PermissionState.GrantedImplicitly
 
             updateState { state ->
                 state.copy(
                     isLoading = false,
                     contactsPermissionState = contactsUiPermissionState,
                     notificationsPermissionState = notificationsUiPermissionState,
+                    alarmPermissionState = alarmUiPermissionState,
                     isNotificationsPermissionVisible = isNotificationsPermissionVisible,
+                    isAlarmPermissionVisible = isAlarmPermissionVisible,
                 )
             }
             updateNextButtonState()
@@ -70,6 +82,10 @@ class PermissionsViewModel(
 
     private fun handleAllowNotificationsPermissionClicked() {
         emitEffect(Effect.RequestNotificationsPermission)
+    }
+
+    private fun handleAllowAlarmPermissionClicked() {
+        emitEffect(Effect.RequestAlarmPermission)
     }
 
     private fun handleContactsPermissionResult(success: Boolean) {
@@ -90,14 +106,27 @@ class PermissionsViewModel(
         updateNextButtonState()
     }
 
+    private fun handleAlarmPermissionResult(success: Boolean) {
+        updateState { state ->
+            state.copy(
+                alarmPermissionState = if (success) UiPermissionState.Granted else UiPermissionState.Denied,
+            )
+        }
+        updateNextButtonState()
+    }
+
     private fun updateNextButtonState() {
         updateState { state ->
             val isContactsPermissionGranted = state.contactsPermissionState == UiPermissionState.Granted
             val isNotificationsPermissionGrantedOrHidden = !state.isNotificationsPermissionVisible ||
                 state.notificationsPermissionState == UiPermissionState.Granted
+            val isAlarmPermissionGrantedOrHidden = !state.isAlarmPermissionVisible ||
+                state.alarmPermissionState == UiPermissionState.Granted
 
             state.copy(
-                isNextButtonVisible = isContactsPermissionGranted && isNotificationsPermissionGrantedOrHidden,
+                isNextButtonVisible = isContactsPermissionGranted &&
+                    isNotificationsPermissionGrantedOrHidden &&
+                    isAlarmPermissionGrantedOrHidden,
             )
         }
     }

@@ -6,4 +6,5 @@ package app.k9mail.core.android.permissions
 enum class Permission {
     Contacts,
     Notifications,
+    Alarm,
 }

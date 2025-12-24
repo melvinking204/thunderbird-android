@@ -10,6 +10,10 @@
     <string name="onboarding_permissions_notifications_title">Notifications</string>
     <!-- Description of why we ask the permission to post notifications -->
     <string name="onboarding_permissions_notifications_description">Turn on notifications so you don\'t miss any emails.</string>
+    <!-- Title of the section asking for permission to schedule exact alarms -->
+    <string name="onboarding_permissions_alarm_title">Exact alarms</string>
+    <!-- Description of why we ask for the permission to schedule exact alarms -->
+    <string name="onboarding_permissions_alarm_description">Allow the app to schedule exact alarms to ensure timely email synchronization.</string>
     <!-- Text of the button that will trigger the system dialog to ask for an Android permission -->
     <string name="onboarding_permissions_allow_button">Allow</string>
     <!-- Text of the button to skip the onboarding screen to ask for Android permissions -->
