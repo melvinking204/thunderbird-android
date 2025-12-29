@@ -14,8 +14,8 @@ android {
     namespace = "com.fsck.k9"
 
     defaultConfig {
-        applicationId = "com.fsck.k9"
-        testApplicationId = "com.fsck.k9.tests"
+        applicationId = "com.starlight.myemailapp"
+        testApplicationId = "com.starlight.myemailapp.tests"
 
         versionCode = 39023
         versionName = "10.0"
