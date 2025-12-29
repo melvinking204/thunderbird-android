@@ -33,7 +33,7 @@ import app.k9mail.feature.onboarding.welcome.R
 
 private const val CIRCLE_COLOR = 0xFFEEEEEE
 private const val CIRCLE_SIZE_DP = 200
-private const val LOGO_SIZE_DP = 150
+private const val LOGO_SIZE_DP = 125
 
 @Composable
 internal fun WelcomeContent(
