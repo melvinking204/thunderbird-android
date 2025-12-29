@@ -13,6 +13,7 @@ bin/
 build/
 gen/
 out/
+app-k9mail/full/release/
 
 # Generated files
 *.aab
