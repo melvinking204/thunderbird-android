@@ -42,17 +42,10 @@ internal class ViewIntentFinder(private val context: Context) {
     }
 
     private fun createViewIntentForAttachmentProviderUri(contentUri: Uri, mimeType: String): Intent {
-        val uri = AttachmentTempFileProvider.getMimeTypeUri(contentUri, mimeType)
-
         return Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, mimeType)
+            setDataAndType(contentUri, mimeType)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            addUiIntentFlags()
         }
-    }
-
-    private fun Intent.addUiIntentFlags() {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
     }
 
     private fun getResolvedIntentActivitiesCount(intent: Intent): Int {
