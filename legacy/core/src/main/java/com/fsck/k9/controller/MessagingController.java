@@ -713,10 +713,11 @@ public class MessagingController implements MessagingControllerRegistry, Messagi
         return new SyncConfig(
                     account.getExpungePolicy().toBackendExpungePolicy(),
                     account.getEarliestPollDate(),
-                    account.isSyncRemoteDeletions(),
+                    account.isSyncRemoteDeletions() && !account.isDeleteMessageAfterDownload(),
                     account.getMaximumAutoDownloadMessageSize(),
                     K9.DEFAULT_VISIBLE_LIMIT,
-                    SYNC_FLAGS);
+                    SYNC_FLAGS,
+                    account.isDeleteMessageAfterDownload());
     }
 
     private void updateFolderStatus(Account account, long folderId, String status) {

@@ -116,6 +116,13 @@
             android:title="@string/account_setup_incoming_delete_policy_label"
             />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="delete_message_after_download"
+            android:title="@string/account_setup_incoming_delete_policy_delete_after_download_label"
+            android:summary="@string/account_setup_incoming_delete_policy_delete_after_download_summary"
+            />
+
         <ListPreference
             android:dialogTitle="@string/account_setup_expunge_policy_label"
             android:entries="@array/expunge_policy_entries"

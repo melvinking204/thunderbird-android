@@ -208,9 +208,7 @@ class PushController internal constructor(
 
         updatePushEnabledListeners(getPushCapableAccounts())
 
-        if (alarmPermissionMissing && realPushAccounts.isNotEmpty()) {
-            alarmPermissionManager.isPermissionRequired = true
-        }
+        alarmPermissionManager.isPermissionRequired = alarmPermissionMissing && realPushAccounts.isNotEmpty()
 
         when {
             realPushAccounts.isEmpty() -> {

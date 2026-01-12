@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -184,6 +185,30 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFr
             if (!messagingController.supportsFlags(account)) {
                 removeEntry(DELETE_POLICY_MARK_AS_READ)
             }
+        }
+
+        val deleteAfterDownloadPreference = findPreference<CheckBoxPreference>(PREFERENCE_DELETE_MESSAGE_AFTER_DOWNLOAD)
+        val syncRemoteDeletionsPreference = findPreference<CheckBoxPreference>(PREFERENCE_SYNC_REMOTE_DELETIONS)
+
+        val isPop3 = account.incomingServerSettings.type == "pop3"
+        if (isPop3) {
+            deleteAfterDownloadPreference?.setOnPreferenceChangeListener { _, newValue ->
+                val isChecked = newValue as Boolean
+                if (isChecked) {
+                    syncRemoteDeletionsPreference?.isChecked = false
+                    syncRemoteDeletionsPreference?.isEnabled = false
+                } else {
+                    syncRemoteDeletionsPreference?.isEnabled = true
+                }
+                true
+            }
+
+            // Initialize state
+            if (deleteAfterDownloadPreference?.isChecked == true) {
+                syncRemoteDeletionsPreference?.isEnabled = false
+            }
+        } else {
+            deleteAfterDownloadPreference?.remove()
         }
     }
 
@@ -469,6 +494,8 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), ConfirmationDialogFr
         private const val PREFERENCE_NOTIFICATION_CHANNELS = "notification_channels"
         private const val PREFERENCE_NOTIFICATION_SETTINGS_MESSAGES = "open_notification_settings_messages"
         private const val PREFERENCE_NOTIFICATION_SETTINGS_MISCELLANEOUS = "open_notification_settings_miscellaneous"
+        private const val PREFERENCE_DELETE_MESSAGE_AFTER_DOWNLOAD = "delete_message_after_download"
+        private const val PREFERENCE_SYNC_REMOTE_DELETIONS = "account_sync_remote_deletetions"
         private const val DELETE_POLICY_MARK_AS_READ = "MARK_AS_READ"
 
         private const val DIALOG_DELETE_ACCOUNT = 1

@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.fsck.k9",
+  "applicationId": "com.starlight.myemailapp",
   "variantName": "fullRelease",
   "elements": [
     {

@@ -331,6 +331,8 @@
     <string name="account_setup_incoming_delete_policy_never_label">Do not delete on server</string>
     <string name="account_setup_incoming_delete_policy_delete_label">Delete from server</string>
     <string name="account_setup_incoming_delete_policy_markread_label">Mark as read on server</string>
+    <string name="account_setup_incoming_delete_policy_delete_after_download_label">Delete from server after download</string>
+    <string name="account_setup_incoming_delete_policy_delete_after_download_summary">Deletes emails from server after downloading to device</string>
 
     <string name="account_setup_expunge_policy_label">Erase deleted messages on server</string>
     <string name="account_setup_expunge_policy_immediately">Immediately</string>

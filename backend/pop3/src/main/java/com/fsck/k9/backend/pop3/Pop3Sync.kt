@@ -311,6 +311,8 @@ internal class Pop3Sync(
             unsyncedMessages.size,
         )
 
+        val messagesToDelete = mutableListOf<Pop3Message>()
+
         unsyncedMessages.clear()
         /*
          * Grab the content of the small messages first. This is going to
@@ -322,7 +324,18 @@ internal class Pop3Sync(
         fp.add(FetchProfile.Item.BODY)
         //        fp.add(FetchProfile.Item.FLAGS);
         //        fp.add(FetchProfile.Item.ENVELOPE);
-        downloadSmallMessages(remoteFolder, backendFolder, smallMessages, progress, newMessages, todo, fp, listener)
+        downloadSmallMessages(
+            remoteFolder,
+            backendFolder,
+            smallMessages,
+            progress,
+            newMessages,
+            todo,
+            fp,
+            listener,
+            syncConfig.deleteMessageAfterDownload,
+            messagesToDelete
+        )
         smallMessages.clear()
         /*
          * Now do the large messages that require more round trips.
@@ -339,8 +352,15 @@ internal class Pop3Sync(
             todo,
             fp,
             listener,
+            syncConfig.deleteMessageAfterDownload,
+            messagesToDelete
         )
         largeMessages.clear()
+
+        if (messagesToDelete.isNotEmpty()) {
+            Timber.d("SYNC: Deleting %d messages from server", messagesToDelete.size)
+            remoteFolder.setFlags(messagesToDelete, setOf(Flag.DELETED), true)
+        }
 
         Timber.d("SYNC: Synced remote messages for folder %s, %d new messages", folder, newMessages.get())
 
@@ -500,6 +520,8 @@ internal class Pop3Sync(
         todo: Int,
         fp: FetchProfile?,
         listener: SyncListener,
+        deleteAfterDownload: Boolean,
+        messagesToDelete: MutableList<Pop3Message>
     ) {
         val folder = remoteFolder.serverId
 
@@ -516,6 +538,11 @@ internal class Pop3Sync(
                         // Store the updated message locally
 
                         backendFolder.saveMessage(message, MessageDownloadState.FULL)
+
+                        if (deleteAfterDownload) {
+                            messagesToDelete.add(message)
+                        }
+
                         progress.incrementAndGet()
 
                         // Increment the number of "new messages" if the newly downloaded message is
@@ -564,6 +591,8 @@ internal class Pop3Sync(
         todo: Int,
         fp: FetchProfile?,
         listener: SyncListener,
+        deleteAfterDownload: Boolean,
+        messagesToDelete: MutableList<Pop3Message>
     ) {
         val folder = remoteFolder.serverId
 
@@ -573,6 +602,10 @@ internal class Pop3Sync(
         remoteFolder.fetch(largeMessages, fp, null, maxDownloadSize)
         for (message in largeMessages) {
             downloadSaneBody(syncConfig, remoteFolder, backendFolder, message)
+
+            if (deleteAfterDownload) {
+                messagesToDelete.add(message)
+            }
 
             val messageServerId = message.uid
             Timber.v(

@@ -24,6 +24,10 @@ class Account(
 
     @get:Synchronized
     @set:Synchronized
+    var isDeleteMessageAfterDownload = false
+
+    @get:Synchronized
+    @set:Synchronized
     private var internalIncomingServerSettings: ServerSettings? = null
 
     @get:Synchronized

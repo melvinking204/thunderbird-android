@@ -10,6 +10,7 @@ data class SyncConfig(
     val maximumAutoDownloadMessageSize: Int,
     val defaultVisibleLimit: Int,
     val syncFlags: Set<Flag>,
+    val deleteMessageAfterDownload: Boolean,
 ) {
     enum class ExpungePolicy {
         IMMEDIATELY,

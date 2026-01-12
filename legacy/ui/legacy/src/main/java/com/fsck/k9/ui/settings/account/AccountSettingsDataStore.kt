@@ -44,6 +44,7 @@ class AccountSettingsDataStore(
             "upload_sent_messages" -> account.isUploadSentMessages
             "ignore_chat_messages" -> account.isIgnoreChatMessages
             "subscribed_folders_only" -> account.isSubscribedFoldersOnly
+            "delete_message_after_download" -> account.isDeleteMessageAfterDownload
             else -> defValue
         }
     }
@@ -69,6 +70,7 @@ class AccountSettingsDataStore(
             "upload_sent_messages" -> account.isUploadSentMessages = value
             "ignore_chat_messages" -> account.isIgnoreChatMessages = value
             "subscribed_folders_only" -> updateSubscribedFoldersOnly(value)
+            "delete_message_after_download" -> account.isDeleteMessageAfterDownload = value
             else -> return
         }
 
