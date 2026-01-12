@@ -493,7 +493,8 @@ internal class Pop3Sync(
                             return
                         }
 
-                        if (syncConfig.maximumAutoDownloadMessageSize > 0 &&
+                        if (!syncConfig.deleteMessageAfterDownload &&
+                            syncConfig.maximumAutoDownloadMessageSize > 0 &&
                             message.size > syncConfig.maximumAutoDownloadMessageSize
                         ) {
                             largeMessages.add(message)
