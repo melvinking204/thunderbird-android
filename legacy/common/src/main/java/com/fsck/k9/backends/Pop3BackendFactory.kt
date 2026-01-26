@@ -19,7 +19,7 @@ class Pop3BackendFactory(
         val backendStorage = backendStorageFactory.createBackendStorage(account)
         val pop3Store = createPop3Store(account)
         val smtpTransport = createSmtpTransport(account)
-        return Pop3Backend(accountName, backendStorage, pop3Store, smtpTransport)
+        return Pop3Backend(accountName, backendStorage, pop3Store, smtpTransport, account.isDeleteMessageAfterDownload)
     }
 
     private fun createPop3Store(account: Account): Pop3Store {

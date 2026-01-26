@@ -20,6 +20,7 @@ class Pop3Backend(
     private val backendStorage: BackendStorage,
     private val pop3Store: Pop3Store,
     private val smtpTransport: SmtpTransport,
+    private val isDeleteMessageAfterDownload: Boolean
 ) : Backend {
     private val pop3Sync: Pop3Sync = Pop3Sync(accountName, backendStorage, pop3Store)
     private val commandRefreshFolderList = CommandRefreshFolderList(backendStorage)
@@ -28,7 +29,8 @@ class Pop3Backend(
 
     override val supportsFlags = false
     override val supportsExpunge = false
-    override val supportsMove = false
+    override val supportsMove: Boolean
+        get() = isDeleteMessageAfterDownload
     override val supportsCopy = false
     override val supportsUpload = false
     override val supportsTrashFolder = false
@@ -94,6 +96,10 @@ class Pop3Backend(
         targetFolderServerId: String,
         messageServerIds: List<String>,
     ): Map<String, String>? {
+        if (supportsMove) {
+            deleteMessages(sourceFolderServerId, messageServerIds)
+            return messageServerIds.associateWith { it }
+        }
         throw UnsupportedOperationException("not supported")
     }
 
