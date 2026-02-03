@@ -44,4 +44,10 @@ val controllerModule = module {
     }
 
     single { LocalDeleteOperationDecider() }
+
+    single {
+        UnreadMessageMonitor(
+            messageCountsProvider = get(),
+        )
+    }
 }

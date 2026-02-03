@@ -8,6 +8,7 @@ import app.k9mail.feature.widget.message.list.MessageListWidgetManager
 import app.k9mail.legacy.di.DI
 import app.k9mail.legacy.ui.theme.ThemeManager
 import com.fsck.k9.controller.MessagingController
+import com.fsck.k9.controller.UnreadMessageMonitor
 import com.fsck.k9.job.WorkManagerConfigurationProvider
 import com.fsck.k9.notification.NotificationChannelManager
 import com.fsck.k9.ui.base.AppLanguageManager
@@ -32,6 +33,7 @@ abstract class CommonApp : Application(), WorkManagerConfiguration.Provider {
     private val notificationChannelManager: NotificationChannelManager by inject()
     private val messageListWidgetManager: MessageListWidgetManager by inject()
     private val workManagerConfigurationProvider: WorkManagerConfigurationProvider by inject()
+    private val unreadMessageMonitor: UnreadMessageMonitor by inject()
 
     private val appCoroutineScope: CoroutineScope = MainScope()
     private var appLanguageManagerInitialized = false
@@ -57,6 +59,8 @@ abstract class CommonApp : Application(), WorkManagerConfiguration.Provider {
         messagingListenerProvider.listeners.forEach { listener ->
             messagingController.addListener(listener)
         }
+
+        unreadMessageMonitor.start()
     }
 
     abstract fun provideAppModule(): Module
