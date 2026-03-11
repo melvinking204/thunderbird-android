@@ -1,5 +1,6 @@
 package com.fsck.k9.ui.messageview
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -42,9 +43,11 @@ internal class ViewIntentFinder(private val context: Context) {
     }
 
     private fun createViewIntentForAttachmentProviderUri(contentUri: Uri, mimeType: String): Intent {
+        val uri = AttachmentTempFileProvider.getMimeTypeUri(contentUri, mimeType)
         return Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(contentUri, mimeType)
+            setDataAndType(uri, mimeType)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            clipData = ClipData.newRawUri(null, uri)
         }
     }
 
