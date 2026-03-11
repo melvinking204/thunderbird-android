@@ -47,6 +47,8 @@ val controllerModule = module {
 
     single {
         UnreadMessageMonitor(
+            context = get(),
+            notificationResourceProvider = get(),
             messageCountsProvider = get(),
         )
     }

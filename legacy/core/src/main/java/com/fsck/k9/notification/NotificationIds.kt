@@ -5,8 +5,9 @@ import app.k9mail.legacy.account.Account
 internal object NotificationIds {
     const val PUSH_NOTIFICATION_ID = 1
     const val BACKGROUND_WORK_NOTIFICATION_ID = 2
+    const val UNREAD_MESSAGE_MONITOR_NOTIFICATION_ID = 3
 
-    private const val NUMBER_OF_GENERAL_NOTIFICATIONS = 2
+    private const val NUMBER_OF_GENERAL_NOTIFICATIONS = 3
     private const val OFFSET_SEND_FAILED_NOTIFICATION = 0
     private const val OFFSET_CERTIFICATE_ERROR_INCOMING = 1
     private const val OFFSET_CERTIFICATE_ERROR_OUTGOING = 2
