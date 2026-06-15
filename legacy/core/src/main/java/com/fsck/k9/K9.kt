@@ -227,7 +227,7 @@ object K9 : KoinComponent {
     private val sortAscending = mutableMapOf<SortType, Boolean>()
 
     @JvmStatic
-    var isUseBackgroundAsUnreadIndicator = false
+    var isUseBackgroundAsUnreadIndicator = true
 
     @get:Synchronized
     @set:Synchronized
@@ -380,7 +380,7 @@ object K9 : KoinComponent {
 
         splitViewMode = storage.getEnum("splitViewMode", SplitViewMode.NEVER)
 
-        isUseBackgroundAsUnreadIndicator = storage.getBoolean("useBackgroundAsUnreadIndicator", false)
+        isUseBackgroundAsUnreadIndicator = storage.getBoolean("useBackgroundAsUnreadIndicator", true)
         isShowComposeButtonOnMessageList = storage.getBoolean("showComposeButtonOnMessageList", true)
         isThreadedViewEnabled = storage.getBoolean("threadedView", true)
         fontSizes.load(storage)

@@ -196,7 +196,7 @@ class GeneralSettingsDescriptions {
         ));
         s.put("useBackgroundAsUnreadIndicator", Settings.versions(
                 new V(19, new BooleanSetting(true)),
-                new V(59, new BooleanSetting(false))
+                new V(59, new BooleanSetting(true))
         ));
         s.put("threadedView", Settings.versions(
                 new V(20, new BooleanSetting(true))

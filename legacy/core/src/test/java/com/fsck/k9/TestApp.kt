@@ -34,7 +34,7 @@ class TestApp : Application() {
 }
 
 val testModule = module {
-    single { AppConfig(emptyList()) }
+    single { AppConfig(emptyList(), "TestApp") }
     single { mock<CoreResourceProvider>() }
     single { mock<EncryptionExtractor>() }
     single<StoragePersister> { InMemoryStoragePersister() }
