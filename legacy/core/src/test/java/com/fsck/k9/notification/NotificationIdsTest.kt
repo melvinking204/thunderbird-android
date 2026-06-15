@@ -96,7 +96,11 @@ class NotificationIdsTest {
     }
 
     private fun getGeneralNotificationIds(): List<Int> {
-        return listOf(NotificationIds.PUSH_NOTIFICATION_ID, NotificationIds.BACKGROUND_WORK_NOTIFICATION_ID)
+        return listOf(
+            NotificationIds.PUSH_NOTIFICATION_ID,
+            NotificationIds.BACKGROUND_WORK_NOTIFICATION_ID,
+            NotificationIds.UNREAD_MESSAGE_MONITOR_NOTIFICATION_ID
+        )
     }
 
     private fun getAccountNotificationIds(account: Account): List<Int> {
