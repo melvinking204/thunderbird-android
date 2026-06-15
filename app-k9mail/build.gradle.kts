@@ -17,7 +17,7 @@ android {
         applicationId = "com.starlight.myemailapp"
         testApplicationId = "com.starlight.myemailapp.tests"
 
-        versionCode = 39023
+        versionCode = 39024
         versionName = "10.0"
 
         // Keep in sync with the resource string array "supported_languages"
