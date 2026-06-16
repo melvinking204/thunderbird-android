@@ -117,3 +117,9 @@ If you want to use a fork of this project please ensure that you replace the OAu
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+## Pushing to the AOSP remote VM 
+Use this command to update the Email app on the remote VM
+```bash
+scp -i "C:\Users\User\.ssh\fdroid_melvin" "C:\Users\User\StudioProjects\Email-app-AstraMail-Fresh\app-k9mail\build\outputs\apk\foss\release\app-k9mail-foss-release-unsigned.apk" melvin@157.180.48.159:~/AOSP/vendor/astra/apps/Email/Email.apk
+``` 
